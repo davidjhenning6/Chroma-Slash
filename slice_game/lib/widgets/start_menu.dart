@@ -21,9 +21,14 @@ class _StartMenuState extends State<StartMenu> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
-          MenuButtons(buttonText: "Play", onCliked: widget.onPlayPressed),
           MenuButtons(
-              buttonText: "High Score", onCliked: widget.onHighScorePressed),
+            buttonText: "Play",
+            onCliked: widget.onPlayPressed,
+          ),
+          MenuButtons(
+            buttonText: "High Score",
+            onCliked: widget.onHighScorePressed,
+          ),
           MenuButtons(
               buttonText: "User Profile",
               onCliked: widget.onPlayerProfilePressed),
