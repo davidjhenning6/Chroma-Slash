@@ -6,6 +6,7 @@ class Target{
   Rect tarRect;
   Paint tarPaint;
   bool isHit = false;
+  bool isOffScreen = false;
 
 
 //we will have to eventually pass in a color here when spawnTarget is called 
@@ -22,6 +23,19 @@ class Target{
 
   void update(double t){
     //move the targets can use translation method for Rect objects
+    if(isHit == true){
+      tarRect = tarRect.translate(0, game.tileSize * 5 * t);
+    }else{
+      //add functionality here to move based on its starting position
+      tarRect = tarRect.translate(game.tileSize * 2 * t, 0);
+    }
+    if(tarRect.top > game.screenSize.height){
+      isOffScreen = true;
+    }
+    //I'll have to add functionality here so it knows what side it started on and what side it should have hit in order to delete
+    if(tarRect.left > game.screenSize.width){
+      isOffScreen = true;
+    }
   }
 
   void onTapDown(){

@@ -18,5 +18,6 @@ class _PlayPageState extends State<PlayPage> {
   @override
   Widget build(BuildContext context) {
     return game.widget;
+    
   }
 }

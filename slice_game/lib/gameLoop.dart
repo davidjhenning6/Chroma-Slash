@@ -1,5 +1,6 @@
 import 'dart:ui';
 import 'dart:math';
+import 'package:flutter/material.dart';
 import 'package:flame/game.dart';
 import 'package:flame/flame.dart';
 import 'package:flutter/gestures.dart';
@@ -23,7 +24,18 @@ class GameLoop extends Game{
   }
 
   spawnTarget(){
-    double x = rand.nextDouble() * (screenSize.width - tileSize);
+    // int min=0;
+    // int max=1;
+    double x;
+    int next=1;
+    // int next = min + rand.nextInt(max - min);
+    if(next == 0){
+      x = screenSize.width + tileSize;
+    }else{
+      x = 0 - tileSize;
+    }
+    
+    //i want x to be 0-tilesize or screenSize.width get 1 or 0 from rand
     double y = rand.nextDouble() * (screenSize.height - tileSize);
     targets.add(Target(this, x, y));
   }
@@ -39,6 +51,9 @@ class GameLoop extends Game{
 
   void update(double t){
     targets.forEach((Target targets)=> targets.update(t));
+    targets.removeWhere((Target targets)=> targets.isOffScreen);
+
+    //add a check to make sure that all of the targets are off the screen and if they are send the next wave
   }
 
   void resize(Size size){
@@ -53,6 +68,10 @@ class GameLoop extends Game{
       }
     });
 
+  }
+
+  void quitGame() {
+    //Navigator.pop(this);
   }
 
 }
