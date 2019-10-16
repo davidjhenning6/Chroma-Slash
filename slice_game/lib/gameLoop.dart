@@ -5,12 +5,15 @@ import 'package:flame/game.dart';
 import 'package:flame/flame.dart';
 import 'package:flutter/gestures.dart';
 import 'package:slice_game/components/target.dart';
+import 'package:slice_game/components/score_counter.dart';
 
 class GameLoop extends Game{
   Size screenSize;
   double tileSize;
   List<Target> targets;
   Random rand;
+  int score;
+  ScoreCounter scoreCounter;
 
   GameLoop(){
     initialize();
@@ -19,7 +22,9 @@ class GameLoop extends Game{
   void initialize() async {
     targets = List<Target>();
     rand = Random();
+    score = 0;
     resize(await Flame.util.initialDimensions());
+    scoreCounter = ScoreCounter(this);
     spawnTarget();
   }
 
@@ -46,6 +51,10 @@ class GameLoop extends Game{
     bgPaint.color = Color(0xff576574);
     canvas.drawRect(bgRect, bgPaint);
 
+  //render background before score but render score before targets
+    scoreCounter.render(canvas);
+
+  //render targets at the end so they are at the forefront
     targets.forEach((Target targets)=> targets.render(canvas));
   }
 
@@ -54,6 +63,10 @@ class GameLoop extends Game{
     targets.removeWhere((Target targets)=> targets.isOffScreen);
 
     //add a check to make sure that all of the targets are off the screen and if they are send the next wave
+    if(targets.isEmpty){
+      spawnTarget();
+    }
+    scoreCounter.update(t);
   }
 
   void resize(Size size){
@@ -70,8 +83,9 @@ class GameLoop extends Game{
 
   }
 
-  void quitGame() {
-    //Navigator.pop(this);
-  }
+  // void quitGame() {
+  //   BuildContext get currentContext => _currentElement;
+  //   //Navigator.pop(this);
+  // }
 
 }

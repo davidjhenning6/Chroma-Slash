@@ -36,12 +36,18 @@ class Target{
     if(tarRect.left > game.screenSize.width){
       isOffScreen = true;
     }
+
   }
 
   void onTapDown(){
     tarPaint.color = Color(0xffff4757);
-    isHit = true;
+    
+    if(isHit != true){
+      isHit = true;
+      game.score += 1;
+    }
     // game.spawnFly();
+
 
   }
 
