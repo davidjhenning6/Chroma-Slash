@@ -29,19 +29,33 @@ class GameLoop extends Game{
   }
 
   spawnTarget(){
-    // int min=0;
-    // int max=1;
-    double x;
-    int next=1;
+    int min=0;
+    int max= (screenSize.width - tileSize).round() ;
+    double x, y;
+    int tempX;
+    //int next=1;
     // int next = min + rand.nextInt(max - min);
-    if(next == 0){
-      x = screenSize.width + tileSize;
-    }else{
-      x = 0 - tileSize;
-    }
+    // if(next == 0){
+    //   x = screenSize.width + tileSize;
+    // }else{
+    //   x = 0 - tileSize;
+    // }
     
+/* next step is to set the starting position of a target as bottom middle and time how long 
+ * it remains on screen, to try and get an estimation on how far the tile needs to move 
+ * per second
+ *
+ * i need to change the y translation to be -12 and then flip to 12 after the square reaches each
+ * height i can hardcode each for now and then i'll need to implement each once the times and widths work
+ * using my xTrans function in target.dart
+ */
+
     //i want x to be 0-tilesize or screenSize.width get 1 or 0 from rand
-    double y = rand.nextDouble() * (screenSize.height - tileSize);
+    //double y = rand.nextDouble() * (screenSize.height - tileSize);
+    y = screenSize.height;
+    //x = (screenSize.width / 2) - (tileSize /2);
+    tempX = min + rand.nextInt(max - min);
+    x = tempX.toDouble();
     targets.add(Target(this, x, y));
   }
 
@@ -65,6 +79,9 @@ class GameLoop extends Game{
     //add a check to make sure that all of the targets are off the screen and if they are send the next wave
     if(targets.isEmpty){
       spawnTarget();
+      if(score > 3){
+        spawnTarget();
+      }
     }
     scoreCounter.update(t);
   }

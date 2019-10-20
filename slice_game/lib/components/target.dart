@@ -1,4 +1,5 @@
 import 'dart:ui';
+import 'dart:math';
 import 'package:slice_game/gameLoop.dart';
 
 class Target{
@@ -7,6 +8,10 @@ class Target{
   Paint tarPaint;
   bool isHit = false;
   bool isOffScreen = false;
+  bool peakReached = false;
+  int widthD, heightD;
+  double xMove;
+  Random rand;
 
 
 //we will have to eventually pass in a color here when spawnTarget is called 
@@ -15,6 +20,91 @@ class Target{
     tarRect = Rect.fromLTWH(x, y, game.tileSize, game.tileSize);
     tarPaint = Paint();
     tarPaint.color = Color(0xff6ab04c);
+
+    //generate random numbers for x and y translations 
+    //x translations will be dependent on where the cube starts along the x axis
+    int min = 1;
+    int maxY = 4;//this is 4 even though there is only 3 states because this method of randome range is exclusive for max but inclusive for min
+    int maxX = 3;//this is 3 even though there is only 2 states because this method of randome range is exclusive for max but inclusive for min
+    //int r;
+    rand = Random();
+    heightD = min + rand.nextInt(maxY - min);
+    widthD = min + rand.nextInt(maxX - min);
+    print("height");
+    print(heightD);
+    print("width");
+    print(widthD);
+
+  }
+
+// this function will be used to return the correct values to plug into the 
+// translate method in update 
+// it takes in the width type of the jump stored as an int from 1-2
+// and the height type of the jump stored as an int from 1-3
+  double xTrans(){
+    double xMove;
+    //check where the left side of the target is
+    //if width is 2 (half) it can only go one way
+      //assign it a + or - value respectively
+    //if width is 1 check to make sure its close enough to go either way
+      //if it can randomly assign it a + or - value 
+    //remember 0,0 is top left
+    if(widthD == 2){//1/2
+      //this will make the xMove + or - here
+      if(tarRect.left < ( (game.screenSize.width / 2) - (game.tileSize / 2) ) ){
+        xMove = 1;
+      }else{
+        xMove = -1;
+      }
+      //now multiply xMove based off of the value of heightD
+      if(heightD == 3){// half height
+        xMove *= 1.5;
+      }else if(heightD == 2){//a third height
+        xMove *= 1;
+      }else if(heightD == 1){// two thirds height
+        xMove *= 2;
+      }
+    }else if(widthD == 1){//1/4
+      //check if its within 1/4 of a side if not random 
+      //if within 1/4 of a side go the other way
+      if(tarRect.left < game.screenSize.width/3){
+        xMove = 1;
+      }else if(tarRect.left > (game.screenSize.width/3)*2 ){
+        xMove = -1;
+      }else{
+        int temp =  1 + rand.nextInt(3 - 1);
+        if(temp == 1){
+          xMove = 1;
+        }else{
+          xMove = -1;
+        }
+      }
+      //now multiply xMove based off of the value of heightD
+      if(heightD == 3){// half height
+        xMove *= 1;
+      }else if(heightD == 2){//a third height
+        xMove *= 0.5;
+      }else if(heightD == 1){// two thirds height
+        xMove *= 1.5;
+      }
+    }else{
+      print("error occured");
+    }
+    return xMove;
+  }
+
+  double yPeak(){
+    double peak;
+    if(heightD == 3){
+      peak = game.screenSize.height / 2;
+    }else if(heightD == 2){
+      peak = game.screenSize.height / 3;
+    }else if(heightD == 1){
+      peak = (game.screenSize.height / 3) * 2;
+    }else{
+      print("error occured");
+    }
+    return peak;
   }
 
   void render(Canvas c){
@@ -23,12 +113,25 @@ class Target{
 
   void update(double t){
     //move the targets can use translation method for Rect objects
-    if(isHit == true){
-      tarRect = tarRect.translate(0, game.tileSize * 5 * t);
-    }else{
-      //add functionality here to move based on its starting position
-      tarRect = tarRect.translate(game.tileSize * 2 * t, 0);
+    double peak;
+    
+    peak = yPeak();
+    if(tarRect.top == game.screenSize.height && (peakReached == false && isHit == false)){
+      xMove = xTrans();
     }
+
+    if(isHit == true){
+      tarRect = tarRect.translate(xMove, game.tileSize * 8 * t);
+    }else if(tarRect.bottom < (peak) && peakReached == false){ 
+      peakReached = true;
+    }
+    else if(peakReached == true){
+      tarRect = tarRect.translate(xMove, game.tileSize * 8 * t);
+    }
+    else{
+      tarRect = tarRect.translate(xMove, game.tileSize * -8 * t);
+    }
+    //this will probably be all i need as current plan is to have several jump types but all will result in a jump that begins and ends at the base of the screen
     if(tarRect.top > game.screenSize.height){
       isOffScreen = true;
     }
