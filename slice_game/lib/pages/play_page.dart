@@ -9,14 +9,16 @@ class PlayPage extends StatefulWidget {
 
 class _PlayPageState extends State<PlayPage> {
   // Util flameUtil = Util();
-  GameLoop game = new GameLoop();
+  void quitGame() {
+    Navigator.pop(context);
+  }
 
-  // void quitGame() {
-  //   Navigator.pop(context);
-  // }
+  
 
+  
   @override
   Widget build(BuildContext context) {
+    GameLoop game = new GameLoop(context);
     return game.widget;
     
   }

@@ -12,14 +12,15 @@ class Target{
   int widthD, heightD;
   double xMove;
   Random rand;
+  Color theColor;
 
 
 //we will have to eventually pass in a color here when spawnTarget is called 
 //as we dont want all of the targets to have the the same colour
-  Target(this.game, double x, double y){
+  Target(this.game, double x, double y, this.theColor){
     tarRect = Rect.fromLTWH(x, y, game.tileSize, game.tileSize);
     tarPaint = Paint();
-    tarPaint.color = Color(0xff6ab04c);
+    tarPaint.color = theColor;
 
     //generate random numbers for x and y translations 
     //x translations will be dependent on where the cube starts along the x axis
@@ -30,10 +31,10 @@ class Target{
     rand = Random();
     heightD = min + rand.nextInt(maxY - min);
     widthD = min + rand.nextInt(maxX - min);
-    print("height");
-    print(heightD);
-    print("width");
-    print(widthD);
+    // print("height");
+    // print(heightD);
+    // print("width");
+    // print(widthD);
 
   }
 
@@ -134,10 +135,16 @@ class Target{
     //this will probably be all i need as current plan is to have several jump types but all will result in a jump that begins and ends at the base of the screen
     if(tarRect.top > game.screenSize.height){
       isOffScreen = true;
+      if(game.lives > 0) {
+        game.lives--;
+      }
     }
     //I'll have to add functionality here so it knows what side it started on and what side it should have hit in order to delete
     if(tarRect.left > game.screenSize.width){
       isOffScreen = true;
+      if(game.lives > 0) {
+        game.lives--;
+      }
     }
 
   }
@@ -147,7 +154,12 @@ class Target{
     
     if(isHit != true){
       isHit = true;
-      game.score += 1;
+      if(theColor.toString() == game.theGoal.goalPaint.color.toString()) {
+        game.score += 1;
+      } else {
+        game.lives--;
+      }
+      
     }
     // game.spawnFly();
 
