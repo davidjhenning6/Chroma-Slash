@@ -151,7 +151,7 @@ class GameLoop extends Game {
 
   void resize(Size size){
     screenSize = size;
-    tileSize = screenSize.width / 9;
+    tileSize = screenSize.width / 6;
   }
 
   void onTapDown(TapDownDetails d){

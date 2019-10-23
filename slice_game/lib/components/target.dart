@@ -120,6 +120,7 @@ class Target{
     }
     return;
   }
+  
   double yPeak(){
     double peak;
     if(heightD == 3){

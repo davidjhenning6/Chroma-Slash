@@ -52,10 +52,10 @@ class Goal{
       50,
     );
 
-    goalBorderRect = Rect.fromLTWH((game.screenSize.width / 2) - (goalTextPainter.width / 2) + 30, 70, game.tileSize - 10, game.tileSize - 10);
+    goalBorderRect = Rect.fromLTWH((game.screenSize.width / 2) - (goalTextPainter.width / 2) + 30, 75, game.tileSize - 10, game.tileSize - 10);
     goalBorderPaint = Paint();
     goalBorderPaint.color = Color(0xffffffff);
-    goalRect = Rect.fromLTWH((game.screenSize.width / 2) - (goalTextPainter.width / 2) + 35, 75, game.tileSize - 20, game.tileSize - 20);
+    goalRect = Rect.fromLTWH((game.screenSize.width / 2) - (goalTextPainter.width / 2) + 35, 80, game.tileSize - 20, game.tileSize - 20);
     goalPaint = Paint();
     goalPaint.color = Color(0xff6ab04c);
     
