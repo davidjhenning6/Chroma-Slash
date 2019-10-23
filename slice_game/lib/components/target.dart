@@ -11,6 +11,7 @@ class Target{
   bool peakReached = false;
   int widthD, heightD;
   double xMove;
+  double yMove;
   Random rand;
   Color theColor;
 
@@ -42,8 +43,8 @@ class Target{
 // translate method in update 
 // it takes in the width type of the jump stored as an int from 1-2
 // and the height type of the jump stored as an int from 1-3
-  double xTrans(){
-    double xMove;
+  void xTrans(){
+    //double xMove;
     //check where the left side of the target is
     //if width is 2 (half) it can only go one way
       //assign it a + or - value respectively
@@ -59,11 +60,11 @@ class Target{
       }
       //now multiply xMove based off of the value of heightD
       if(heightD == 3){// half height
-        xMove *= 1.5;
+        xMove *= 3;
       }else if(heightD == 2){//a third height
-        xMove *= 1;
-      }else if(heightD == 1){// two thirds height
         xMove *= 2;
+      }else if(heightD == 1){// two thirds height
+        xMove *= 4;
       }
     }else if(widthD == 1){//1/4
       //check if its within 1/4 of a side if not random 
@@ -91,9 +92,34 @@ class Target{
     }else{
       print("error occured");
     }
-    return xMove;
+    //if it hits a wall bounce off
+    
+    return;//xMove;
   }
 
+  void yTrans(double peak){
+    //use yMove in here
+    if(isHit == true){
+      yMove = -8;
+      return;
+    }
+
+    if(heightD == 1){
+      //as the square approaches peak reduce the y move towards 0 and 
+      //when it hits the peak have it sit at 0 for a frame 
+
+    }else if(heightD == 2){
+
+    }else if(heightD == 3){
+
+    }
+
+
+    if(peakReached == true){
+      //yMove *= -1;
+    }
+    return;
+  }
   double yPeak(){
     double peak;
     if(heightD == 3){
@@ -115,22 +141,26 @@ class Target{
   void update(double t){
     //move the targets can use translation method for Rect objects
     double peak;
-    
     peak = yPeak();
+    
     if(tarRect.top == game.screenSize.height && (peakReached == false && isHit == false)){
-      xMove = xTrans();
+      xTrans();
+    }
+    yTrans(peak);
+    if( ( tarRect.right + (game.tileSize) >= game.screenSize.width && xMove > 0)  || (tarRect.left - (game.tileSize) <= 0 && xMove < 0) ){
+      xMove *= -1;
     }
 
     if(isHit == true){
-      tarRect = tarRect.translate(xMove, game.tileSize * 8 * t);
+      tarRect = tarRect.translate(0, game.tileSize * 8 * t);
     }else if(tarRect.bottom < (peak) && peakReached == false){ 
       peakReached = true;
     }
     else if(peakReached == true){
-      tarRect = tarRect.translate(xMove, game.tileSize * 8 * t);
+      tarRect = tarRect.translate(game.tileSize * xMove * t, game.tileSize * 8 * t);
     }
     else{
-      tarRect = tarRect.translate(xMove, game.tileSize * -8 * t);
+      tarRect = tarRect.translate(game.tileSize * xMove * t, game.tileSize * -8 * t);
     }
     //this will probably be all i need as current plan is to have several jump types but all will result in a jump that begins and ends at the base of the screen
     if(tarRect.top > game.screenSize.height){

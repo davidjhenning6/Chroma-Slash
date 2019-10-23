@@ -57,6 +57,7 @@ class GameLoop extends Game {
     theGoal = Goal(this);
     livesScr = LifeCount(this);
     spawnTarget();
+    
   }
 
   spawnTarget(){
