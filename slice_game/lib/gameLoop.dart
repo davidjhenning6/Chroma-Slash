@@ -26,6 +26,7 @@ class GameLoop extends Game{
     resize(await Flame.util.initialDimensions());
     scoreCounter = ScoreCounter(this);
     spawnTarget();
+    
   }
 
   spawnTarget(){
