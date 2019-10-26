@@ -47,7 +47,7 @@ class GameLoop extends Game {
     targets = List<Target>();
     rand = Random();
     score = 0;
-    lives = 3;
+    lives = 8;
     currentLevel = 0;
     totalListColours = [Color(0xff6ab04c), Color(0xffffff00), Color(0xff0000ff)];
     //currentLevel = 0;
@@ -122,28 +122,34 @@ class GameLoop extends Game {
 
     //add a check to make sure that all of the targets are off the screen and if they are send the next wave
     if(targets.isEmpty){
-      spawnTarget();
-      if(score > 3){
+      if(lives > 0){
         spawnTarget();
+        if(score >= 3){
+          spawnTarget();
+        }
+        if(score >= 10){
+          spawnTarget();
+        }
+        theGoal.changeColour(getRandomColour());
       }
     }
     scoreCounter.update(t);
 
 
-    if(score == 5 && currentLevel == 0) {
-      theGoal.changeColour(getRandomColour());
-      currentLevel++;
-    } else if(score == 10 && currentLevel == 1) {
-      theGoal.changeColour(getRandomColour());
-      currentLevel++;
-    } else if(score == 15 && currentLevel == 2) {
-      theGoal.changeColour(getRandomColour());
-      currentLevel++;
-    } else if(score == 20 && currentLevel == 3) {
-      theGoal.changeColour(getRandomColour());
-      currentLevel++;
+    // if(score == 5 && currentLevel == 0) {
+    //   theGoal.changeColour(getRandomColour());
+    //   currentLevel++;
+    // } else if(score == 10 && currentLevel == 1) {
+    //   theGoal.changeColour(getRandomColour());
+    //   currentLevel++;
+    // } else if(score == 15 && currentLevel == 2) {
+    //   theGoal.changeColour(getRandomColour());
+    //   currentLevel++;
+    // } else if(score == 20 && currentLevel == 3) {
+    //   theGoal.changeColour(getRandomColour());
+    //   currentLevel++;
 
-    } 
+    // } 
 
     livesScr.update(t);
     
