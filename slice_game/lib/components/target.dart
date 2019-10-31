@@ -152,10 +152,11 @@ class Target {
       xTrans();
     }
     yTrans(peak);
-    if ((tarRect.right + (game.tileSize) >= game.screenSize.width && xMove > 0) ||
-        (tarRect.left - (game.tileSize) <= 0 && xMove < 0)) {
+    if ((tarRect.right + (game.tileSize / 2) >= game.screenSize.width && xMove > 0) ||
+        (tarRect.left - (game.tileSize / 2) <= 0 && xMove < 0)) {
       xMove *= -1;
     }
+    //implement collision between targets
 
     if (isHit == true) {
       tarRect = tarRect.translate(0, game.tileSize * 6 * t);

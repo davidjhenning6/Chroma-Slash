@@ -2,10 +2,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:slice_game/pages/home_page.dart';
-//import 'package:flutter/gestures.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flame/util.dart';
-//import 'package:slice_game/pages/play_page.dart';
-//import 'package:slice_game/gameLoop.dart';
+// import 'package:Flame/util/addGestureRecognizer.dart';
+// import 'package:slice_game/pages/play_page.dart';
+// import 'package:slice_game/gameLoop.dart';
 
 
 void main() async {
@@ -17,6 +18,10 @@ void main() async {
   //GameInit g = new GameInit();
 
   runApp(SliceGame());
+  // flameUtil.addGestureRecognizer(new TapGestureRecognizer()
+  //   ..onTapDown = (TapDownDetails evt) => game.handleInput(evt.globalPosition.dx, evt.globalPosition.dy));
+
+  
 
   // TapGestureRecognizer tapper = TapGestureRecognizer();
   // tapper.onTapDown = game.onTapDown;

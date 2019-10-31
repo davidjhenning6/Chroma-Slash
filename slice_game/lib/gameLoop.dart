@@ -31,8 +31,14 @@ class GameLoop extends Game {
   GameLoop(this.context){
     initialize();
     //quitFunction 
+    //Flame.util.addGestureRecognizer(createTapRecognizer());
     
   }
+
+  // TapGestureRecognizer createTapRecognizer() {
+  //   return new TapGestureRecognizer()
+  //     ..onTapDown = (TapDownDetails details) => this.handleInput(details.globalPosition);;
+  // }
 
   List<Color> totalListColours = [];
   Color getRandomColour() {
@@ -47,7 +53,7 @@ class GameLoop extends Game {
     targets = List<Target>();
     rand = Random();
     score = 0;
-    lives = 8;
+    lives = 20;
     currentLevel = 0;
     totalListColours = [Color(0xff6ab04c), Color(0xffffff00), Color(0xff0000ff)];
     //currentLevel = 0;
@@ -61,10 +67,11 @@ class GameLoop extends Game {
   }
 
   spawnTarget(){
-    int min=0;
-    int max= (screenSize.width - tileSize).round() ;
+    int min = 0;
+    int max = (screenSize.width - tileSize).round() ;
     double x, y;
     int tempX;
+    int i = 0;
     //int next=1;
     // int next = min + rand.nextInt(max - min);
     // if(next == 0){
@@ -88,7 +95,38 @@ class GameLoop extends Game {
     //x = (screenSize.width / 2) - (tileSize /2);
     tempX = min + rand.nextInt(max - min);
     x = tempX.toDouble();
-    targets.add(Target(this, x, y, getRandomColour()));
+    //x is the left side of the target so check if any other tile is in the current tile
+
+    //loop through each of the existing targets to check if there exists another target at that position
+    if( targets.length == 0){
+      targets.add(Target(this, x, y, getRandomColour()));
+      // print(tileSize);
+      // print("0==");
+      // print(x);
+    } else {
+      
+      while(i < targets.length){
+        //an x must be generated that will not exist inside another target
+        //so x1 - tileSize > x2 or x1 + tileSize < x2
+        //below checks if the targets will overlap
+        if( ( (( x + tileSize ) >= targets[i].tarRect.right) && (x <= targets[i].tarRect.right )) || ( (( x + tileSize ) >= targets[i].tarRect.left) && (x <= targets[i].tarRect.left )) ){
+          tempX = min + rand.nextInt(max - min);
+          x = tempX.toDouble();
+          i = 0;
+        } else {
+          i++;
+        }
+        //if a match is met reset i to 0 to check all of them again
+      }
+      targets.add(Target(this, x, y, getRandomColour()));
+      // print("1==");
+      // print(x);
+    }
+    
+    // if(){
+
+    // }
+    
   }
 
   void render(Canvas canvas){
@@ -107,7 +145,9 @@ class GameLoop extends Game {
   }
 
   void update(double t){
-
+    int outer = 0;
+    int inner = 0;
+    double tempSpeed = 0;
     if(lives <= 0) {
       //Navigator.pop(this);
       
@@ -116,7 +156,45 @@ class GameLoop extends Game {
       // CupertinoPageRoute(builder: (context) => HomePage()),
       //);
     }
+    //do collision check here that way after both targets are flipped they can be retested for wall collision
+    if(targets.length > 1){
+      for(outer = 0; outer < targets.length; outer++){//loop through each
+        for(inner = 0; inner < targets.length; inner++){//loop through remaining
+          if(inner != outer){
+            //flip both that way once it gets to inner as outer it will not catch as the x will already be flipped
+            if( (targets[outer].tarRect.center.dy - targets[inner].tarRect.center.dy).abs() <= tileSize ){//check to see if they are within the height
+              if((targets[outer].tarRect.center.dx - targets[inner].tarRect.center.dx).abs() <= tileSize){//check if they are within a tileSize width wise
+                if(targets[outer].tarRect.center.dx < targets[inner].tarRect.center.dx ){//if outer is to the left 
+                  if( ( targets[outer].xMove >= 0) && (targets[inner].xMove <= 0) ){
+                    targets[outer].xMove *= -1;
+                    targets[inner].xMove *= -1; 
+                    print("they collided");
+                  }
+                  // else if( (targets[outer].xMove * targets[inner].xMove).abs() > 0 ){
+                  //   tempSpeed = targets[outer].xMove;
+                  //   targets[outer].xMove = targets[inner].xMove;
+                  //   targets[inner].xMove = tempSpeed;
+                  // }
+                }else{//if outer is to the right
+                  if( ( targets[outer].xMove <= 0) && (targets[inner].xMove >= 0) ){
+                    targets[outer].xMove *= -1;
+                    targets[inner].xMove *= -1; 
+                    print("they collided");
+                  }
+                  // else if( (targets[outer].xMove * targets[inner].xMove).abs() > 0 ){
+                  //   tempSpeed = targets[outer].xMove;
+                  //   targets[outer].xMove = targets[inner].xMove;
+                  //   targets[inner].xMove = tempSpeed;
+                  // }
+                }
+                
+              }
+            }
+          }
+        }//inner loop
 
+      }//outer loop
+    }
     targets.forEach((Target targets)=> targets.update(t));
     targets.removeWhere((Target targets)=> targets.isOffScreen);
 
@@ -124,7 +202,7 @@ class GameLoop extends Game {
     if(targets.isEmpty){
       if(lives > 0){
         spawnTarget();
-        if(score >= 3){
+        if(score >= 0){///////////change back
           spawnTarget();
         }
         if(score >= 10){
@@ -160,14 +238,37 @@ class GameLoop extends Game {
     tileSize = screenSize.width / 6;
   }
 
+
+
+  // void onPanStart(DragStartDetails d){
+  //   print(d.globalPosition);
+  // }
+
   void onTapDown(TapDownDetails d){
     targets.forEach((Target targets){
+      //print(d.globalPosition.dx);
       if(targets.tarRect.contains(d.globalPosition)){
         targets.onTapDown();
       }
     });
-
   }
+
+  // void handleInput(Offset d){
+  //   print("offset of tap");
+  //   print(d);
+
+  //   targets.forEach((Target targets){
+  //     print(targets.tarRect.left);
+  //     print(targets.tarRect.top);
+  //     if(targets.tarRect.contains(d)){
+  //       targets.onTapDown();
+  //       print("hit");
+  //     }
+  //   });
+
+  // }
+
+  
 
   // void quitGame() {
   //   BuildContext get currentContext => _currentElement;
