@@ -90,7 +90,7 @@ class GameLoop extends Game {
     quit = Quit(this);
     pauseText = PauseText(this);
     //gameOverText = GameOver(this);
-    spawnTarget();
+    //spawnTarget();
   }
 
   spawnTarget(){
