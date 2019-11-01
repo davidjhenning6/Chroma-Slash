@@ -3,7 +3,7 @@ import 'package:flutter/painting.dart';
 import 'package:flutter/widgets.dart';
 import 'package:slice_game/gameLoop.dart';
 
-class LifeCount{
+class ScoreCount{
   final GameLoop game;
   TextPainter painter;
   TextStyle textStyle;
@@ -12,7 +12,7 @@ class LifeCount{
   TextStyle livesTextStyle;
   Offset livesPosition;
 
-  LifeCount(this.game){
+  ScoreCount(this.game){
 
     painter = TextPainter(
       textAlign: TextAlign.center,
@@ -51,7 +51,7 @@ class LifeCount{
     livesPosition = Offset.zero;
 
     painter.text = TextSpan(
-      text: "Lives",
+      text: "Score",
       style: textStyle,
     );
 
@@ -59,7 +59,7 @@ class LifeCount{
 
     position = Offset(
       //if i want to center the score on the screen
-      (game.screenSize.width / 2) - (painter.width / 2) + 140,
+      10,
       //(game.screenSize.width) - (game.screenSize.width / 3),
       50,
     );
@@ -67,9 +67,9 @@ class LifeCount{
   }
 
   void update(double t){
-    if ((livesPainter.text?.text ?? '') != game.lives.toString()) {
+    if ((livesPainter.text?.text ?? '') != game.score.toString()) {
       livesPainter.text = TextSpan(
-      text: game.lives.toString(),
+      text: game.score.toString(),
       style: livesTextStyle,
     );
 
@@ -77,7 +77,7 @@ class LifeCount{
 
     livesPosition = Offset(
       //if i want to center the score on the screen
-      (game.screenSize.width / 2) - (painter.width / 2) + 155,
+      25,
       //(game.screenSize.width) - (game.screenSize.width / 3),
       70,
     );

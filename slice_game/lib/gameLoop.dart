@@ -10,6 +10,13 @@ import 'package:slice_game/components/score_counter.dart';
 import 'package:slice_game/components/goal.dart';
 import 'package:slice_game/components/life_count.dart';
 import 'package:slice_game/pages/home_page.dart';
+import 'package:slice_game/components/pause.dart';
+import 'package:slice_game/components/score_count.dart';
+import 'package:slice_game/components/restart_game.dart';
+import 'package:slice_game/components/quit.dart';
+import 'package:slice_game/components/pause_text.dart';
+import 'package:slice_game/components/game_over.dart';
+
 ///import 'package:slice_game/components/randomColours.dart';
 
 class GameLoop extends Game {
@@ -21,18 +28,25 @@ class GameLoop extends Game {
   Random rand;
   int score;
   int lives;
-  ScoreCounter scoreCounter;
+  int otherThrowCount;
+  bool isPaused;
+  //ScoreCounter scoreCounter;
+  ScoreCount scoreCount;
   //RandomColour randColour;
+  RestartGame restart;
   Goal theGoal;
+  GameOver gameOverText;
+  Pause thePause;
   LifeCount livesScr;
+  Quit quit;
+  PauseText pauseText;
   int currentLevel;
-  
+  int gameThrowCount;
+  bool isGameOver;
 
-  GameLoop(this.context){
+  GameLoop(this.context) {
     initialize();
-    //quitFunction 
-    //Flame.util.addGestureRecognizer(createTapRecognizer());
-    
+    //quitFunction
   }
 
   // TapGestureRecognizer createTapRecognizer() {
@@ -46,7 +60,6 @@ class GameLoop extends Game {
     var val = totalListColours[rng.nextInt(3)];
     //print(val);
     return val;
-    
   }
 
   void initialize() async {
@@ -55,15 +68,29 @@ class GameLoop extends Game {
     score = 0;
     lives = 20;
     currentLevel = 0;
-    totalListColours = [Color(0xff6ab04c), Color(0xffffff00), Color(0xff0000ff)];
+    isPaused = false;
+    totalListColours = [
+      Color(0xff6ab04c),
+      Color(0xffffff00),
+      Color(0xff0000ff)
+    ];
+    gameThrowCount = 1;
+    otherThrowCount = 1;
+    isGameOver = false;
     //currentLevel = 0;
     //randColour = RandomColour();
     resize(await Flame.util.initialDimensions());
-    scoreCounter = ScoreCounter(this);
+
+    //scoreCounter = ScoreCounter(this);
+    scoreCount = ScoreCount(this);
     theGoal = Goal(this);
+    thePause = Pause(this);
     livesScr = LifeCount(this);
+    restart = RestartGame(this);
+    quit = Quit(this);
+    pauseText = PauseText(this);
+    gameOverText = GameOver(this);
     spawnTarget();
-    
   }
 
   spawnTarget(){
@@ -79,7 +106,7 @@ class GameLoop extends Game {
     // }else{
     //   x = 0 - tileSize;
     // }
-    
+
 /* next step is to set the starting position of a target as bottom middle and time how long 
  * it remains on screen, to try and get an estimation on how far the tile needs to move 
  * per second
@@ -129,20 +156,27 @@ class GameLoop extends Game {
     
   }
 
-  void render(Canvas canvas){
+  void render(Canvas canvas) {
     Rect bgRect = Rect.fromLTWH(0, 0, screenSize.width, screenSize.height);
     Paint bgPaint = Paint();
     bgPaint.color = Color(0xff576574);
     canvas.drawRect(bgRect, bgPaint);
 
-  //render background before score but render score before targets
-    scoreCounter.render(canvas);
+    //render background before score but render score before targets
+    //scoreCounter.render(canvas);
+
     theGoal.render(canvas);
     livesScr.render(canvas);
+    thePause.render(canvas);
+    scoreCount.render(canvas);
+    restart.render(canvas);
+    quit.render(canvas);
 
-  //render targets at the end so they are at the forefront
-    targets.forEach((Target targets)=> targets.render(canvas));
-  }
+    //render targets at the end so they are at the forefront
+    targets.forEach((Target targets) => targets.render(canvas));
+    if (isPaused) {
+      pauseText.render(canvas);
+    }
 
   void update(double t){
     int outer = 0;
@@ -217,71 +251,55 @@ class GameLoop extends Game {
         spawnTarget();
         if(score >= 0){///////////change back
           spawnTarget();
+          if (score >= 3) {
+            spawnTarget();
+          }
+          if (score >= 10) {
+            spawnTarget();
+          }
+          if (gameThrowCount == 3) {
+            gameThrowCount = 0;
+            //theGoal.changeColour(theGoal.theGoalColor);
+          } else {
+            theGoal.changeColour(getRandomColour());
+          }
+        } else {
+          isGameOver = true;
         }
-        if(score >= 10){
-          spawnTarget();
-        }
-        theGoal.changeColour(getRandomColour());
       }
+      //scoreCounter.update(t);
+
+      scoreCount.update(t);
+
+      livesScr.update(t);
+      thePause.update(t);
     }
-    scoreCounter.update(t);
-
-
-    // if(score == 5 && currentLevel == 0) {
-    //   theGoal.changeColour(getRandomColour());
-    //   currentLevel++;
-    // } else if(score == 10 && currentLevel == 1) {
-    //   theGoal.changeColour(getRandomColour());
-    //   currentLevel++;
-    // } else if(score == 15 && currentLevel == 2) {
-    //   theGoal.changeColour(getRandomColour());
-    //   currentLevel++;
-    // } else if(score == 20 && currentLevel == 3) {
-    //   theGoal.changeColour(getRandomColour());
-    //   currentLevel++;
-
-    // } 
-
-    livesScr.update(t);
-    
   }
 
-  void resize(Size size){
+  void resize(Size size) {
     screenSize = size;
     tileSize = screenSize.width / 6;
   }
 
-
-
-  // void onPanStart(DragStartDetails d){
-  //   print(d.globalPosition);
-  // }
-
-  void onTapDown(TapDownDetails d){
-    targets.forEach((Target targets){
-      //print(d.globalPosition.dx);
-      if(targets.tarRect.contains(d.globalPosition)){
-        targets.onTapDown();
-      }
-    });
+  void onTapDown(TapDownDetails d) {
+    print("IM CURRENTLY PRESSED!!!!");
+    if (!isPaused) {
+      targets.forEach((Target targets) {
+        if (targets.tarRect.contains(d.globalPosition)) {
+          targets.onTapDown();
+        }
+      });
+    }
+    if (thePause.pauseBorderRect.contains(d.globalPosition)) {
+      thePause.onTapDown();
+    }
+    if (restart.restartBorderRect.contains(d.globalPosition)) {
+      restart.onTapDown();
+    }
+    if (quit.quitBorderRect.contains(d.globalPosition)) {
+      quit.onTapDown(context: context);
+    }
   }
-
-  // void handleInput(Offset d){
-  //   print("offset of tap");
-  //   print(d);
-
-  //   targets.forEach((Target targets){
-  //     print(targets.tarRect.left);
-  //     print(targets.tarRect.top);
-  //     if(targets.tarRect.contains(d)){
-  //       targets.onTapDown();
-  //       print("hit");
-  //     }
-  //   });
-
-  // }
-
-  
 
   // void quitGame() {
   //   BuildContext get currentContext => _currentElement;

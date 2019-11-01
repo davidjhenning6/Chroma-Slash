@@ -13,19 +13,9 @@ void main() async {
   Util flameUtil = Util();
   await flameUtil.fullScreen();
   await flameUtil.setOrientation(DeviceOrientation.portraitUp);
-
-  
-  //GameInit g = new GameInit();
-
+ 
   runApp(SliceGame());
-  // flameUtil.addGestureRecognizer(new TapGestureRecognizer()
-  //   ..onTapDown = (TapDownDetails evt) => game.handleInput(evt.globalPosition.dx, evt.globalPosition.dy));
-
   
-
-  // TapGestureRecognizer tapper = TapGestureRecognizer();
-  // tapper.onTapDown = game.onTapDown;
-  // flameUtil.addGestureRecognizer(tapper);
 } 
 
 
