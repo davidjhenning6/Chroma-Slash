@@ -216,6 +216,12 @@ class GameLoop extends Game {
                     targets[outer].xMove *= -1;
                     targets[inner].xMove *= -1; 
                     //print("they collided");
+                  } else if( ( targets[outer].xMove > 0) && (targets[inner].xMove > 0) || ( targets[outer].xMove < 0) && (targets[inner].xMove < 0) ){
+                    if(targets[outer].xMove > targets[inner].xMove){
+                      targets[outer].xMove *= -1;
+                    }else{
+                      targets[inner].xMove *= -1;
+                    }
                   }
                   // else if( (targets[outer].xMove * targets[inner].xMove).abs() >= 0 ){
                   //   if(targets[outer].xMove >= 0 && targets[outer].xMove >= targets[inner].xMove){
@@ -233,7 +239,14 @@ class GameLoop extends Game {
                     targets[outer].xMove *= -1;
                     targets[inner].xMove *= -1; 
                     //print("they collided");
-                  }
+                  } else if( ( targets[outer].xMove > 0) && (targets[inner].xMove > 0) || ( targets[outer].xMove < 0) && (targets[inner].xMove < 0) ){
+                    if(targets[outer].xMove > targets[inner].xMove){
+                      targets[outer].xMove *= -1;
+                    }else{
+                      targets[inner].xMove *= -1;
+                    }
+                    
+                  } 
                   // else if( (targets[outer].xMove * targets[inner].xMove).abs() >= 0 ){
                   //   if(targets[outer].xMove >= 0 && targets[outer].xMove <= targets[inner].xMove){
                   //     tempSpeed = targets[outer].xMove;
