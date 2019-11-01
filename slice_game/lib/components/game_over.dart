@@ -29,6 +29,12 @@ class GameOver{
     );
 
     position = Offset.zero;
+    painter.text = TextSpan(
+      text: " ",
+      style: textStyle,
+    );
+    painter.layout();
+    
 
   }
 
@@ -42,7 +48,7 @@ class GameOver{
       style: textStyle,
     );
 
-    painter.layout();
+    
 
     position = Offset(
       //if i want to center the score on the screen

@@ -63,6 +63,11 @@ class ScoreCount{
       //(game.screenSize.width) - (game.screenSize.width / 3),
       50,
     );
+    livesPainter.text = TextSpan(
+      text: " ",
+      style: textStyle,
+    );
+    livesPainter.layout();
 
   }
 

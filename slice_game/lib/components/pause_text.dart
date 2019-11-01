@@ -29,6 +29,11 @@ class PauseText{
     );
 
     position = Offset.zero;
+    painter.text = TextSpan(
+      text: " ",
+      style: textStyle,
+    );
+    painter.layout();
 
   }
 

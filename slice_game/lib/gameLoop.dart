@@ -181,7 +181,7 @@ class GameLoop extends Game {
     }
 
     if (isGameOver) {
-          gameOverText.render(canvas);
+      gameOverText.render(canvas);
     }
 
   }
@@ -296,22 +296,22 @@ class GameLoop extends Game {
 
   void onTapDown(TapDownDetails d) {
     print("IM CURRENTLY PRESSED!!!!");
-    if (!isPaused) {
+    //if (!isPaused) {
       targets.forEach((Target targets) {
         if (targets.tarRect.contains(d.globalPosition)) {
           targets.onTapDown();
         }
       });
-    }
-    if (thePause.pauseBorderRect.contains(d.globalPosition)) {
-      thePause.onTapDown();
-    }
-    if (restart.restartBorderRect.contains(d.globalPosition)) {
-      restart.onTapDown();
-    }
-    if (quit.quitBorderRect.contains(d.globalPosition)) {
-      quit.onTapDown(context: context);
-    }
+    //}
+    // if (thePause.pauseBorderRect.contains(d.globalPosition)) {
+    //   thePause.onTapDown();
+    // }
+    // if (restart.restartBorderRect.contains(d.globalPosition)) {
+    //   restart.onTapDown();
+    // }
+    // if (quit.quitBorderRect.contains(d.globalPosition)) {
+    //   quit.onTapDown(context: context);
+    // }
   }
 
   // void quitGame() {
