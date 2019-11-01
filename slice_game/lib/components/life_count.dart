@@ -64,7 +64,7 @@ class LifeCount{
       50,
     );
     livesPainter.text = TextSpan(
-      text: " ",
+      text: "",
       style: textStyle,
     );
     livesPainter.layout();

@@ -15,7 +15,7 @@ import 'package:slice_game/components/score_count.dart';
 import 'package:slice_game/components/restart_game.dart';
 import 'package:slice_game/components/quit.dart';
 import 'package:slice_game/components/pause_text.dart';
-import 'package:slice_game/components/game_over.dart';
+//import 'package:slice_game/components/game_over.dart';
 
 ///import 'package:slice_game/components/randomColours.dart';
 
@@ -35,7 +35,7 @@ class GameLoop extends Game {
   //RandomColour randColour;
   RestartGame restart;
   Goal theGoal;
-  GameOver gameOverText;
+  //GameOver gameOverText;
   Pause thePause;
   LifeCount livesScr;
   Quit quit;
@@ -89,7 +89,7 @@ class GameLoop extends Game {
     restart = RestartGame(this);
     quit = Quit(this);
     pauseText = PauseText(this);
-    gameOverText = GameOver(this);
+    //gameOverText = GameOver(this);
     spawnTarget();
   }
 
@@ -180,9 +180,9 @@ class GameLoop extends Game {
       pauseText.render(canvas);
     }
 
-    if (isGameOver) {
-      gameOverText.render(canvas);
-    }
+    // if (isGameOver) {
+    //   gameOverText.render(canvas);
+    // }
 
   }
 
@@ -202,27 +202,27 @@ class GameLoop extends Game {
         
     
   if (!isPaused) {
-      targets.forEach((Target targets) => targets.update(t));
-      targets.removeWhere((Target targets) => targets.isOffScreen);
+    targets.forEach((Target targets) => targets.update(t));
+    targets.removeWhere((Target targets) => targets.isOffScreen);
     if(targets.length > 1){
       for(outer = 0; outer < targets.length; outer++){//loop through each
         for(inner = 0; inner < targets.length; inner++){//loop through remaining
           if(inner != outer && targets[outer].tarRect.top < screenSize.height && targets[inner].tarRect.top < screenSize.height){
             //flip both that way once it gets to inner as outer it will not catch as the x will already be flipped
-            if( (targets[outer].tarRect.center.dy - targets[inner].tarRect.center.dy).abs() <= tileSize ){//check to see if they are within the height
-              if((targets[outer].tarRect.center.dx - targets[inner].tarRect.center.dx).abs() <= tileSize){//check if they are within a tileSize width wise
+            if( (targets[outer].tarRect.center.dy - targets[inner].tarRect.center.dy).abs() <= tileSize + (tileSize/8) ){//check to see if they are within the height
+              if((targets[outer].tarRect.center.dx - targets[inner].tarRect.center.dx).abs() <= tileSize + (tileSize/8)){//check if they are within a tileSize width wise
                 if(targets[outer].tarRect.center.dx < targets[inner].tarRect.center.dx ){//if outer is to the left 
                   if( ( targets[outer].xMove >= 0) && (targets[inner].xMove <= 0) ){
                     targets[outer].xMove *= -1;
                     targets[inner].xMove *= -1; 
                     //print("they collided");
                   }
-                  // else if( (targets[outer].xMove * targets[inner].xMove).abs() > 0 ){
-                  //   if(targets[outer].xMove > 0 && targets[outer].xMove >= targets[inner].xMove){
+                  // else if( (targets[outer].xMove * targets[inner].xMove).abs() >= 0 ){
+                  //   if(targets[outer].xMove >= 0 && targets[outer].xMove >= targets[inner].xMove){
                   //     tempSpeed = targets[outer].xMove;
                   //     targets[outer].xMove = targets[inner].xMove;
                   //     targets[inner].xMove = tempSpeed;
-                  //   }else if(targets[outer].xMove < 0 && targets[outer].xMove <= targets[inner].xMove){
+                  //   }else if(targets[outer].xMove <= 0 && targets[outer].xMove <= targets[inner].xMove){
                   //     tempSpeed = targets[outer].xMove;
                   //     targets[outer].xMove = targets[inner].xMove;
                   //     targets[inner].xMove = tempSpeed;
@@ -234,12 +234,12 @@ class GameLoop extends Game {
                     targets[inner].xMove *= -1; 
                     //print("they collided");
                   }
-                  // else if( (targets[outer].xMove * targets[inner].xMove).abs() > 0 ){
-                  //   if(targets[outer].xMove > 0 && targets[outer].xMove <= targets[inner].xMove){
+                  // else if( (targets[outer].xMove * targets[inner].xMove).abs() >= 0 ){
+                  //   if(targets[outer].xMove >= 0 && targets[outer].xMove <= targets[inner].xMove){
                   //     tempSpeed = targets[outer].xMove;
                   //     targets[outer].xMove = targets[inner].xMove;
                   //     targets[inner].xMove = tempSpeed;
-                  //   }else if(targets[outer].xMove < 0 && targets[outer].xMove >= targets[inner].xMove){
+                  //   }else if(targets[outer].xMove <= 0 && targets[outer].xMove >= targets[inner].xMove){
                   //     tempSpeed = targets[outer].xMove;
                   //     targets[outer].xMove = targets[inner].xMove;
                   //     targets[inner].xMove = tempSpeed;
@@ -296,22 +296,22 @@ class GameLoop extends Game {
 
   void onTapDown(TapDownDetails d) {
     print("IM CURRENTLY PRESSED!!!!");
-    //if (!isPaused) {
+    if (!isPaused) {
       targets.forEach((Target targets) {
         if (targets.tarRect.contains(d.globalPosition)) {
           targets.onTapDown();
         }
       });
-    //}
-    // if (thePause.pauseBorderRect.contains(d.globalPosition)) {
-    //   thePause.onTapDown();
-    // }
-    // if (restart.restartBorderRect.contains(d.globalPosition)) {
-    //   restart.onTapDown();
-    // }
-    // if (quit.quitBorderRect.contains(d.globalPosition)) {
-    //   quit.onTapDown(context: context);
-    // }
+    }
+    if (thePause.pauseBorderRect.contains(d.globalPosition)) {
+      thePause.onTapDown();
+    }
+    if (restart.restartBorderRect.contains(d.globalPosition)) {
+      restart.onTapDown();
+    }
+    if (quit.quitBorderRect.contains(d.globalPosition)) {
+      quit.onTapDown(context: context);
+    }
   }
 
   // void quitGame() {
