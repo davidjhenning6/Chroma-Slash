@@ -178,6 +178,8 @@ class GameLoop extends Game {
       pauseText.render(canvas);
     }
 
+  }
+
   void update(double t){
     int outer = 0;
     int inner = 0;
