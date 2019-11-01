@@ -172,10 +172,16 @@ class GameLoop extends Game {
     restart.render(canvas);
     quit.render(canvas);
 
+    
+
     //render targets at the end so they are at the forefront
     targets.forEach((Target targets) => targets.render(canvas));
     if (isPaused) {
       pauseText.render(canvas);
+    }
+
+    if (isGameOver) {
+          gameOverText.render(canvas);
     }
 
   }
@@ -193,9 +199,11 @@ class GameLoop extends Game {
       //);
     }
     //do collision check here that way after both targets are flipped they can be retested for wall collision
+        
     
-    targets.forEach((Target targets)=> targets.update(t));
-    targets.removeWhere((Target targets)=> targets.isOffScreen);
+  if (!isPaused) {
+      targets.forEach((Target targets) => targets.update(t));
+      targets.removeWhere((Target targets) => targets.isOffScreen);
     if(targets.length > 1){
       for(outer = 0; outer < targets.length; outer++){//loop through each
         for(inner = 0; inner < targets.length; inner++){//loop through remaining
@@ -245,8 +253,9 @@ class GameLoop extends Game {
         }//inner loop
 
       }//outer loop
+    
     }
-
+  }
     //add a check to make sure that all of the targets are off the screen and if they are send the next wave
     if(targets.isEmpty){
       if(lives > 0){
@@ -265,9 +274,11 @@ class GameLoop extends Game {
           } else {
             theGoal.changeColour(getRandomColour());
           }
-        } else {
-          isGameOver = true;
-        }
+        } 
+      }
+
+      if(lives == 0) {
+        isGameOver = true;
       }
       //scoreCounter.update(t);
 
