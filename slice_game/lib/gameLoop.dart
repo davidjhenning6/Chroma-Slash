@@ -157,10 +157,13 @@ class GameLoop extends Game {
       //);
     }
     //do collision check here that way after both targets are flipped they can be retested for wall collision
+    
+    targets.forEach((Target targets)=> targets.update(t));
+    targets.removeWhere((Target targets)=> targets.isOffScreen);
     if(targets.length > 1){
       for(outer = 0; outer < targets.length; outer++){//loop through each
         for(inner = 0; inner < targets.length; inner++){//loop through remaining
-          if(inner != outer){
+          if(inner != outer && targets[outer].tarRect.top < screenSize.height && targets[inner].tarRect.top < screenSize.height){
             //flip both that way once it gets to inner as outer it will not catch as the x will already be flipped
             if( (targets[outer].tarRect.center.dy - targets[inner].tarRect.center.dy).abs() <= tileSize ){//check to see if they are within the height
               if((targets[outer].tarRect.center.dx - targets[inner].tarRect.center.dx).abs() <= tileSize){//check if they are within a tileSize width wise
@@ -168,35 +171,45 @@ class GameLoop extends Game {
                   if( ( targets[outer].xMove >= 0) && (targets[inner].xMove <= 0) ){
                     targets[outer].xMove *= -1;
                     targets[inner].xMove *= -1; 
-                    print("they collided");
+                    //print("they collided");
                   }
                   // else if( (targets[outer].xMove * targets[inner].xMove).abs() > 0 ){
-                  //   tempSpeed = targets[outer].xMove;
-                  //   targets[outer].xMove = targets[inner].xMove;
-                  //   targets[inner].xMove = tempSpeed;
+                  //   if(targets[outer].xMove > 0 && targets[outer].xMove >= targets[inner].xMove){
+                  //     tempSpeed = targets[outer].xMove;
+                  //     targets[outer].xMove = targets[inner].xMove;
+                  //     targets[inner].xMove = tempSpeed;
+                  //   }else if(targets[outer].xMove < 0 && targets[outer].xMove <= targets[inner].xMove){
+                  //     tempSpeed = targets[outer].xMove;
+                  //     targets[outer].xMove = targets[inner].xMove;
+                  //     targets[inner].xMove = tempSpeed;
+                  //   }
                   // }
                 }else{//if outer is to the right
                   if( ( targets[outer].xMove <= 0) && (targets[inner].xMove >= 0) ){
                     targets[outer].xMove *= -1;
                     targets[inner].xMove *= -1; 
-                    print("they collided");
+                    //print("they collided");
                   }
                   // else if( (targets[outer].xMove * targets[inner].xMove).abs() > 0 ){
-                  //   tempSpeed = targets[outer].xMove;
-                  //   targets[outer].xMove = targets[inner].xMove;
-                  //   targets[inner].xMove = tempSpeed;
+                  //   if(targets[outer].xMove > 0 && targets[outer].xMove <= targets[inner].xMove){
+                  //     tempSpeed = targets[outer].xMove;
+                  //     targets[outer].xMove = targets[inner].xMove;
+                  //     targets[inner].xMove = tempSpeed;
+                  //   }else if(targets[outer].xMove < 0 && targets[outer].xMove >= targets[inner].xMove){
+                  //     tempSpeed = targets[outer].xMove;
+                  //     targets[outer].xMove = targets[inner].xMove;
+                  //     targets[inner].xMove = tempSpeed;
+                  //   }
                   // }
                 }
                 
-              }
-            }
-          }
+              }//dx check proximity
+            }//dy check proximity
+          }//check that inner and outer are not equal
         }//inner loop
 
       }//outer loop
     }
-    targets.forEach((Target targets)=> targets.update(t));
-    targets.removeWhere((Target targets)=> targets.isOffScreen);
 
     //add a check to make sure that all of the targets are off the screen and if they are send the next wave
     if(targets.isEmpty){
