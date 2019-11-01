@@ -156,7 +156,7 @@ class Target {
         (tarRect.left - (game.tileSize / 2) <= 0 && xMove < 0)) {
       xMove *= -1;
     }
-    //implement collision between targets
+    
 
     if (isHit == true) {
       tarRect = tarRect.translate(0, game.tileSize * 6 * t);
