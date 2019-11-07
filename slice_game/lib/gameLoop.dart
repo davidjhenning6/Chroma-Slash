@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flame/game.dart';
 import 'package:flame/flame.dart';
 import 'package:flutter/gestures.dart';
+import 'package:slice_game/components/bladePixel.dart';
 import 'package:slice_game/components/target.dart';
 import 'package:slice_game/components/score_counter.dart';
 import 'package:slice_game/components/goal.dart';
@@ -25,6 +26,7 @@ class GameLoop extends Game {
   Size screenSize;
   double tileSize;
   List<Target> targets;
+  List<BladePixel> bladePixels;
   Random rand;
   int score;
   int lives;
@@ -47,12 +49,16 @@ class GameLoop extends Game {
   GameLoop(this.context) {
     initialize();
     //quitFunction
+    Flame.util.addGestureRecognizer(createDragRecognizer());
   }
 
-  // TapGestureRecognizer createTapRecognizer() {
-  //   return new TapGestureRecognizer()
-  //     ..onTapDown = (TapDownDetails details) => this.handleInput(details.globalPosition);;
-  // }
+  GestureRecognizer createDragRecognizer() {
+        return new PanGestureRecognizer()
+                        ..onUpdate = (DragUpdateDetails update) => this.handleDragUpdate(update);
+            //..onStart = (DragStartDetails start) => this.handleDragStart(start);
+            //..onEnd = (DragEndDetails end) => this.handleDragEnd(end);
+    }
+
 
   List<Color> totalListColours = [];
   Color getRandomColour() {
@@ -64,6 +70,7 @@ class GameLoop extends Game {
 
   void initialize() async {
     targets = List<Target>();
+    bladePixels = List<BladePixel>();
     rand = Random();
     score = 0;
     lives = 20;
@@ -127,16 +134,13 @@ class GameLoop extends Game {
     //loop through each of the existing targets to check if there exists another target at that position
     if( targets.length == 0){
       targets.add(Target(this, x, y, getRandomColour()));
-      // print(tileSize);
-      // print("0==");
-      // print(x);
     } else {
-      
       while(i < targets.length){
         //an x must be generated that will not exist inside another target
         //so x1 - tileSize > x2 or x1 + tileSize < x2
         //below checks if the targets will overlap
-        if( ( (( x + tileSize ) >= targets[i].tarRect.right) && (x <= targets[i].tarRect.right )) || ( (( x + tileSize ) >= targets[i].tarRect.left) && (x <= targets[i].tarRect.left )) ){
+        if( ( (( x + tileSize ) >= targets[i].tarRect.right) && (x <= targets[i].tarRect.right )) 
+                          || (( ( x + tileSize ) >= targets[i].tarRect.left) && (x <= targets[i].tarRect.left )) ){
           tempX = min + rand.nextInt(max - min);
           x = tempX.toDouble();
           i = 0;
@@ -146,14 +150,7 @@ class GameLoop extends Game {
         //if a match is met reset i to 0 to check all of them again
       }
       targets.add(Target(this, x, y, getRandomColour()));
-      // print("1==");
-      // print(x);
     }
-    
-    // if(){
-
-    // }
-    
   }
 
   void render(Canvas canvas) {
@@ -176,20 +173,15 @@ class GameLoop extends Game {
 
     //render targets at the end so they are at the forefront
     targets.forEach((Target targets) => targets.render(canvas));
+    bladePixels.forEach((BladePixel bladePixel) => bladePixel.render(canvas));
     if (isPaused) {
       pauseText.render(canvas);
     }
-
-    // if (isGameOver) {
-    //   gameOverText.render(canvas);
-    // }
-
   }
 
   void update(double t){
     int outer = 0;
     int inner = 0;
-    double tempSpeed = 0;
     if(lives <= 0) {
       //Navigator.pop(this);
       
@@ -199,8 +191,6 @@ class GameLoop extends Game {
       //);
     }
     //do collision check here that way after both targets are flipped they can be retested for wall collision
-        
-    
   if (!isPaused) {
     targets.forEach((Target targets) => targets.update(t));
     targets.removeWhere((Target targets) => targets.isOffScreen);
@@ -215,7 +205,6 @@ class GameLoop extends Game {
                   if( ( targets[outer].xMove >= 0) && (targets[inner].xMove <= 0) ){
                     targets[outer].xMove *= -1;
                     targets[inner].xMove *= -1; 
-                    //print("they collided");
                   } else if( ( targets[outer].xMove > 0) && (targets[inner].xMove > 0) || ( targets[outer].xMove < 0) && (targets[inner].xMove < 0) ){
                     if(targets[outer].xMove > targets[inner].xMove){
                       targets[outer].xMove *= -1;
@@ -223,57 +212,30 @@ class GameLoop extends Game {
                       targets[inner].xMove *= -1;
                     }
                   }
-                  // else if( (targets[outer].xMove * targets[inner].xMove).abs() >= 0 ){
-                  //   if(targets[outer].xMove >= 0 && targets[outer].xMove >= targets[inner].xMove){
-                  //     tempSpeed = targets[outer].xMove;
-                  //     targets[outer].xMove = targets[inner].xMove;
-                  //     targets[inner].xMove = tempSpeed;
-                  //   }else if(targets[outer].xMove <= 0 && targets[outer].xMove <= targets[inner].xMove){
-                  //     tempSpeed = targets[outer].xMove;
-                  //     targets[outer].xMove = targets[inner].xMove;
-                  //     targets[inner].xMove = tempSpeed;
-                  //   }
-                  // }
                 }else{//if outer is to the right
                   if( ( targets[outer].xMove <= 0) && (targets[inner].xMove >= 0) ){
                     targets[outer].xMove *= -1;
                     targets[inner].xMove *= -1; 
-                    //print("they collided");
                   } else if( ( targets[outer].xMove > 0) && (targets[inner].xMove > 0) || ( targets[outer].xMove < 0) && (targets[inner].xMove < 0) ){
                     if(targets[outer].xMove > targets[inner].xMove){
                       targets[outer].xMove *= -1;
                     }else{
                       targets[inner].xMove *= -1;
                     }
-                    
                   } 
-                  // else if( (targets[outer].xMove * targets[inner].xMove).abs() >= 0 ){
-                  //   if(targets[outer].xMove >= 0 && targets[outer].xMove <= targets[inner].xMove){
-                  //     tempSpeed = targets[outer].xMove;
-                  //     targets[outer].xMove = targets[inner].xMove;
-                  //     targets[inner].xMove = tempSpeed;
-                  //   }else if(targets[outer].xMove <= 0 && targets[outer].xMove >= targets[inner].xMove){
-                  //     tempSpeed = targets[outer].xMove;
-                  //     targets[outer].xMove = targets[inner].xMove;
-                  //     targets[inner].xMove = tempSpeed;
-                  //   }
-                  // }
-                }
-                
+                }                
               }//dx check proximity
             }//dy check proximity
           }//check that inner and outer are not equal
         }//inner loop
-
       }//outer loop
-    
     }
   }
     //add a check to make sure that all of the targets are off the screen and if they are send the next wave
     if(targets.isEmpty){
       if(lives > 0){
         spawnTarget();
-        if(score >= 0){///////////change back
+        if(score >= 0){
           spawnTarget();
           if (score >= 3) {
             spawnTarget();
@@ -327,9 +289,18 @@ class GameLoop extends Game {
     }
   }
 
-  // void quitGame() {
-  //   BuildContext get currentContext => _currentElement;
-  //   //Navigator.pop(this);
-  // }
+
+
+  Drag handleDragUpdate(DragUpdateDetails d){
+    print("ma nama geoff 2");
+    print(d.globalPosition.dx);
+    print(d.globalPosition.dy);
+    bladePixels.add(BladePixel(this, d.globalPosition.dx, d.globalPosition.dy));
+
+  }
+
+
+
+
 
 }
