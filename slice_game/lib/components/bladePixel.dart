@@ -15,6 +15,7 @@ class BladePixel{
     pixPaint.color = Color(0xffffffff);
 
   }
+  
 
   remove(){
 
