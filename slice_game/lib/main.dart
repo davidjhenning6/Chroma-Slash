@@ -1,8 +1,22 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:slice_game/pages/home_page.dart';
+import 'package:flutter/gestures.dart';
+import 'package:flame/util.dart';
+// import 'package:Flame/util/addGestureRecognizer.dart';
+// import 'package:slice_game/pages/play_page.dart';
+// import 'package:slice_game/gameLoop.dart';
 
-void main() => runApp(SliceGame());
+
+void main() async {
+  Util flameUtil = Util();
+  await flameUtil.fullScreen();
+  await flameUtil.setOrientation(DeviceOrientation.portraitUp);
+ 
+  runApp(SliceGame());
+  
+} 
 
 
 class SliceGame extends StatelessWidget {
@@ -12,6 +26,7 @@ class SliceGame extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: _title,
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),

@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:slice_game/components/no_back_route.dart';
 import 'package:slice_game/pages/high_score_page.dart';
 import 'package:slice_game/pages/player_profile_page.dart';
 import 'package:slice_game/pages/play_page.dart';
@@ -16,7 +17,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePage extends State<HomePage> {
-
   void playerProfilePressed() {
     Navigator.push(
       context,
@@ -34,7 +34,7 @@ class _HomePage extends State<HomePage> {
   void playPressed() {
     Navigator.push(
       context,
-      CupertinoPageRoute(builder: (context) => PlayPage()),
+      NoBackRoute(builder: (context) => PlayPage()),
     );
   }
 
