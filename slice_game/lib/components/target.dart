@@ -197,8 +197,7 @@ class Target {
       if (theColor.toString() == game.theGoal.goalPaint.color.toString()) {
         game.score += 1;
       } else {
-        //game.lives--;
-        game.lives = 0;
+        game.lives--;
       }
     }
     // game.spawnFly();

@@ -2,7 +2,7 @@ import 'dart:ui';
 import 'package:flutter/painting.dart';
 import 'package:flutter/widgets.dart';
 import 'package:slice_game/gameLoop.dart';
-import 'package:flame/components/text_box_component.dart';
+//import 'package:flame/components/text_box_component.dart';
 
 //this is an option to display the current color the player should attempt to hit
 class Pause{

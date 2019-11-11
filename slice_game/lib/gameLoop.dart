@@ -7,10 +7,10 @@ import 'package:flame/flame.dart';
 import 'package:flutter/gestures.dart';
 import 'package:slice_game/components/bladePixel.dart';
 import 'package:slice_game/components/target.dart';
-import 'package:slice_game/components/score_counter.dart';
+//import 'package:slice_game/components/score_counter.dart';
 import 'package:slice_game/components/goal.dart';
 import 'package:slice_game/components/life_count.dart';
-import 'package:slice_game/pages/home_page.dart';
+//import 'package:slice_game/pages/home_page.dart';
 import 'package:slice_game/components/pause.dart';
 import 'package:slice_game/components/score_count.dart';
 import 'package:slice_game/components/restart_game.dart';
@@ -289,10 +289,8 @@ class GameLoop extends Game {
     }
   }
 
-
-
-  Drag handleDragUpdate(DragUpdateDetails d){
-    print("ma nama geoff 2");
+  void handleDragUpdate(DragUpdateDetails d){
+    print("x,y");
     print(d.globalPosition.dx);
     print(d.globalPosition.dy);
     bladePixels.add(BladePixel(this, d.globalPosition.dx, d.globalPosition.dy));

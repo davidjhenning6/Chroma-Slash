@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:slice_game/pages/home_page.dart';
-import 'package:flutter/gestures.dart';
+//import 'package:flutter/gestures.dart';
 import 'package:flame/util.dart';
 // import 'package:Flame/util/addGestureRecognizer.dart';
 // import 'package:slice_game/pages/play_page.dart';
