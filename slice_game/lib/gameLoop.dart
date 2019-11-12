@@ -173,6 +173,15 @@ class GameLoop extends Game {
 
     //render targets at the end so they are at the forefront
     targets.forEach((Target targets) => targets.render(canvas));
+    if(bladePixels.length > 0){
+      bladePixels.removeAt(0);//remove happens slower than render so it creates a cool effect hope it works out :)
+    }
+    //print(bladePixels.length);
+    // if(bladePixels.length >= 10){
+    //   //print(bladePixels.first.pixRect.bottom);
+    //   bladePixels.removeAt(0);
+    //   //print(bladePixels.first.pixRect.bottom);
+    // }
     bladePixels.forEach((BladePixel bladePixel) => bladePixel.render(canvas));
     if (isPaused) {
       pauseText.render(canvas);
@@ -270,14 +279,15 @@ class GameLoop extends Game {
   }
 
   void onTapDown(TapDownDetails d) {
-    print("IM CURRENTLY PRESSED!!!!");
-    if (!isPaused) {
-      targets.forEach((Target targets) {
-        if (targets.tarRect.contains(d.globalPosition)) {
-          targets.onTapDown();
-        }
-      });
-    }
+    //print("IM CURRENTLY PRESSED!!!!");
+    //this has become obsolete because of slicing being implemented
+    // if (!isPaused) {
+    //   targets.forEach((Target targets) {
+    //     if (targets.tarRect.contains(d.globalPosition)) {
+    //       targets.onTapDown();
+    //     }
+    //   });
+    // }
     if (thePause.pauseBorderRect.contains(d.globalPosition)) {
       thePause.onTapDown();
     }
@@ -290,15 +300,16 @@ class GameLoop extends Game {
   }
 
   void handleDragUpdate(DragUpdateDetails d){
-    print("x,y");
-    print(d.globalPosition.dx);
-    print(d.globalPosition.dy);
+    // print("x,y");
+    // print(d.globalPosition.dx);
+    // print(d.globalPosition.dy);
     bladePixels.add(BladePixel(this, d.globalPosition.dx, d.globalPosition.dy));
+    targets.forEach((Target targets) {
+        if (targets.tarRect.contains(d.globalPosition)) {
+          targets.onTapDown();
+        }
+      });
 
   }
-
-
-
-
 
 }
