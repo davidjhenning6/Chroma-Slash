@@ -45,26 +45,27 @@ class GameLoop extends Game {
   int currentLevel;
   int gameThrowCount;
   bool isGameOver;
+  //double timeSinceLastSpawn;
+  int groupSize;
+  int currentGroupSize;
+  List<GestureRecognizer> swipeGestures = [];
 
   GameLoop(this.context) {
     initialize();
-    //quitFunction
-    Flame.util.addGestureRecognizer(createDragRecognizer());
+    var ges = createDragRecognizer();
+    swipeGestures.add(ges);
+    Flame.util.addGestureRecognizer(ges);
   }
 
   GestureRecognizer createDragRecognizer() {
-        return new PanGestureRecognizer()
-                        ..onUpdate = (DragUpdateDetails update) => this.handleDragUpdate(update);
-            //..onStart = (DragStartDetails start) => this.handleDragStart(start);
-            //..onEnd = (DragEndDetails end) => this.handleDragEnd(end);
-    }
-
+    return new PanGestureRecognizer()
+      ..onUpdate = (DragUpdateDetails update) => this.handleDragUpdate(update);
+  }
 
   List<Color> totalListColours = [];
   Color getRandomColour() {
     var rng = new Random();
     var val = totalListColours[rng.nextInt(3)];
-    //print(val);
     return val;
   }
 
@@ -76,6 +77,7 @@ class GameLoop extends Game {
     lives = 20;
     currentLevel = 0;
     isPaused = false;
+    currentGroupSize = 0;
     totalListColours = [
       Color(0xff6ab04c),
       Color(0xffffff00),
@@ -84,11 +86,8 @@ class GameLoop extends Game {
     gameThrowCount = 1;
     otherThrowCount = 1;
     isGameOver = false;
-    //currentLevel = 0;
-    //randColour = RandomColour();
     resize(await Flame.util.initialDimensions());
 
-    //scoreCounter = ScoreCounter(this);
     scoreCount = ScoreCount(this);
     theGoal = Goal(this);
     thePause = Pause(this);
@@ -96,51 +95,28 @@ class GameLoop extends Game {
     restart = RestartGame(this);
     quit = Quit(this);
     pauseText = PauseText(this);
-    //gameOverText = GameOver(this);
-    //spawnTarget();
   }
 
-  spawnTarget(){
+  void spawnTarget(/*double delay*/) {
     int min = 0;
-    int max = (screenSize.width - tileSize).round() ;
+    int max = (screenSize.width - tileSize).round();
     double x, y;
     int tempX;
     int i = 0;
-    //int next=1;
-    // int next = min + rand.nextInt(max - min);
-    // if(next == 0){
-    //   x = screenSize.width + tileSize;
-    // }else{
-    //   x = 0 - tileSize;
-    // }
 
-/* next step is to set the starting position of a target as bottom middle and time how long 
- * it remains on screen, to try and get an estimation on how far the tile needs to move 
- * per second
- *
- * i need to change the y translation to be -12 and then flip to 12 after the square reaches each
- * height i can hardcode each for now and then i'll need to implement each once the times and widths work
- * using my xTrans function in target.dart
- */
-
-    //i want x to be 0-tilesize or screenSize.width get 1 or 0 from rand
-    //double y = rand.nextDouble() * (screenSize.height - tileSize);
-    y = screenSize.height;
-    //x = (screenSize.width / 2) - (tileSize /2);
+    y = screenSize.height;    
     tempX = min + rand.nextInt(max - min);
     x = tempX.toDouble();
     //x is the left side of the target so check if any other tile is in the current tile
-
     //loop through each of the existing targets to check if there exists another target at that position
-    if( targets.length == 0){
+    if (targets.length == 0) {
       targets.add(Target(this, x, y, getRandomColour()));
     } else {
-      while(i < targets.length){
-        //an x must be generated that will not exist inside another target
-        //so x1 - tileSize > x2 or x1 + tileSize < x2
-        //below checks if the targets will overlap
-        if( ( (( x + tileSize ) >= targets[i].tarRect.right) && (x <= targets[i].tarRect.right )) 
-                          || (( ( x + tileSize ) >= targets[i].tarRect.left) && (x <= targets[i].tarRect.left )) ){
+      while (i < targets.length) {
+        print("i'm getting stuck here");
+        if ( targets[i].tarRect.bottom >= screenSize.height &&
+            (((x + tileSize) >= targets[i].tarRect.right) && (x <= targets[i].tarRect.right)) ||
+            (((x + tileSize) >= targets[i].tarRect.left) && (x <= targets[i].tarRect.left))) {
           tempX = min + rand.nextInt(max - min);
           x = tempX.toDouble();
           i = 0;
@@ -148,9 +124,9 @@ class GameLoop extends Game {
           i++;
         }
         //if a match is met reset i to 0 to check all of them again
-      }
+      }//end while
       targets.add(Target(this, x, y, getRandomColour()));
-    }
+    }//else end
   }
 
   void render(Canvas canvas) {
@@ -169,108 +145,120 @@ class GameLoop extends Game {
     restart.render(canvas);
     quit.render(canvas);
 
-    
-
     //render targets at the end so they are at the forefront
     targets.forEach((Target targets) => targets.render(canvas));
-    if(bladePixels.length > 0){
-      bladePixels.removeAt(0);//remove happens slower than render so it creates a cool effect hope it works out :)
+    if (bladePixels.length > 0) {
+      bladePixels.removeAt(0); //remove happens slower than render so it creates a cool effect hope it works out :)
     }
-    //print(bladePixels.length);
-    // if(bladePixels.length >= 10){
-    //   //print(bladePixels.first.pixRect.bottom);
-    //   bladePixels.removeAt(0);
-    //   //print(bladePixels.first.pixRect.bottom);
-    // }
+    if(bladePixels.length > 20){
+      bladePixels.removeAt(0);
+    }
     bladePixels.forEach((BladePixel bladePixel) => bladePixel.render(canvas));
     if (isPaused) {
       pauseText.render(canvas);
     }
   }
 
-  void update(double t){
+  void update(double t) {
     int outer = 0;
     int inner = 0;
-    if(lives <= 0) {
-      //Navigator.pop(this);
-      
-      // Navigator.push(
-      // context,
-      // CupertinoPageRoute(builder: (context) => HomePage()),
-      //);
-    }
     //do collision check here that way after both targets are flipped they can be retested for wall collision
-  if (!isPaused) {
-    targets.forEach((Target targets) => targets.update(t));
-    targets.removeWhere((Target targets) => targets.isOffScreen);
-    if(targets.length > 1){
-      for(outer = 0; outer < targets.length; outer++){//loop through each
-        for(inner = 0; inner < targets.length; inner++){//loop through remaining
-          if(inner != outer && targets[outer].tarRect.top < screenSize.height && targets[inner].tarRect.top < screenSize.height){
-            //flip both that way once it gets to inner as outer it will not catch as the x will already be flipped
-            if( (targets[outer].tarRect.center.dy - targets[inner].tarRect.center.dy).abs() <= tileSize + (tileSize/8) ){//check to see if they are within the height
-              if((targets[outer].tarRect.center.dx - targets[inner].tarRect.center.dx).abs() <= tileSize + (tileSize/8)){//check if they are within a tileSize width wise
-                if(targets[outer].tarRect.center.dx < targets[inner].tarRect.center.dx ){//if outer is to the left 
-                  if( ( targets[outer].xMove >= 0) && (targets[inner].xMove <= 0) ){
-                    targets[outer].xMove *= -1;
-                    targets[inner].xMove *= -1; 
-                  } else if( ( targets[outer].xMove > 0) && (targets[inner].xMove > 0) || ( targets[outer].xMove < 0) && (targets[inner].xMove < 0) ){
-                    if(targets[outer].xMove > targets[inner].xMove){
+    if (!isPaused) {
+      targets.forEach((Target targets) => targets.update(t));
+      targets.removeWhere((Target targets) => targets.isOffScreen);
+      if (targets.length > 1) {
+        for (outer = 0; outer < targets.length; outer++) {
+          //loop through each
+          for (inner = 0; inner < targets.length; inner++) {
+            //loop through remaining
+            if (inner != outer &&
+                targets[outer].tarRect.top < screenSize.height &&
+                targets[inner].tarRect.top < screenSize.height) {
+              //flip both that way once it gets to inner as outer it will not catch as the x will already be flipped
+              if ((targets[outer].tarRect.center.dy -
+                          targets[inner].tarRect.center.dy)
+                      .abs() <=
+                  tileSize + (tileSize / 8)) {
+                //check to see if they are within the height
+                if ((targets[outer].tarRect.center.dx -
+                            targets[inner].tarRect.center.dx)
+                        .abs() <=
+                    tileSize + (tileSize / 8)) {
+                  //check if they are within a tileSize width wise
+                  if (targets[outer].tarRect.center.dx <
+                      targets[inner].tarRect.center.dx) {
+                    //if outer is to the left
+                    if ((targets[outer].xMove >= 0) &&
+                        (targets[inner].xMove <= 0)) {
                       targets[outer].xMove *= -1;
-                    }else{
                       targets[inner].xMove *= -1;
+                    } else if ((targets[outer].xMove > 0) &&
+                            (targets[inner].xMove > 0) ||
+                        (targets[outer].xMove < 0) &&
+                            (targets[inner].xMove < 0)) {
+                      if (targets[outer].xMove > targets[inner].xMove) {
+                        targets[outer].xMove *= -1;
+                      } else {
+                        targets[inner].xMove *= -1;
+                      }
+                    }
+                  } else {
+                    //if outer is to the right
+                    if ((targets[outer].xMove <= 0) &&
+                        (targets[inner].xMove >= 0)) {
+                      targets[outer].xMove *= -1;
+                      targets[inner].xMove *= -1;
+                    } else if ((targets[outer].xMove > 0) &&
+                            (targets[inner].xMove > 0) ||
+                        (targets[outer].xMove < 0) &&
+                            (targets[inner].xMove < 0)) {
+                      if (targets[outer].xMove > targets[inner].xMove) {
+                        targets[outer].xMove *= -1;
+                      } else {
+                        targets[inner].xMove *= -1;
+                      }
                     }
                   }
-                }else{//if outer is to the right
-                  if( ( targets[outer].xMove <= 0) && (targets[inner].xMove >= 0) ){
-                    targets[outer].xMove *= -1;
-                    targets[inner].xMove *= -1; 
-                  } else if( ( targets[outer].xMove > 0) && (targets[inner].xMove > 0) || ( targets[outer].xMove < 0) && (targets[inner].xMove < 0) ){
-                    if(targets[outer].xMove > targets[inner].xMove){
-                      targets[outer].xMove *= -1;
-                    }else{
-                      targets[inner].xMove *= -1;
-                    }
-                  } 
-                }                
-              }//dx check proximity
-            }//dy check proximity
-          }//check that inner and outer are not equal
-        }//inner loop
-      }//outer loop
+                } //dx check proximity
+              } //dy check proximity
+            } //check that inner and outer are not equal
+          } //inner loop
+        } //outer loop
+      }
     }
-  }
     //add a check to make sure that all of the targets are off the screen and if they are send the next wave
-    if(targets.isEmpty){
-      if(lives > 0){
-        spawnTarget();
-        if(score >= 0){
-          spawnTarget();
-          if (score >= 3) {
-            spawnTarget();
-          }
-          if (score >= 10) {
-            spawnTarget();
-          }
-          if (gameThrowCount == 3) {
-            gameThrowCount = 0;
-            //theGoal.changeColour(theGoal.theGoalColor);
-          } else {
-            theGoal.changeColour(getRandomColour());
-          }
-        } 
+    var milliSec = 300;
+    if (targets.isEmpty) {
+      if (lives > 0) {
+        theGoal.changeColour(getRandomColour());
+        spawnTarget(/*0*/);
+        
+        currentGroupSize = 1;
       }
-
-      if(lives == 0) {
-        isGameOver = true;
+      //set groupSize based on score
+      if (score >= 0 && lives > 0) {
+        groupSize = 2;
+        Future.delayed(Duration(milliseconds: milliSec), () => spawnTarget());
+      } 
+      if (score >= 3 && lives > 0) {
+        groupSize = 3;
+        Future.delayed(Duration(milliseconds: milliSec + 300), () => spawnTarget());
       }
-      //scoreCounter.update(t);
-
-      scoreCount.update(t);
-
-      livesScr.update(t);
-      thePause.update(t);
+      if (score >= 10 && lives > 0) {
+        groupSize = 4;
+        Future.delayed(Duration(milliseconds: milliSec ), () => spawnTarget());
+      }
     }
+ 
+    if (lives <= 0) {
+      isGameOver = true;
+      lives = 0;
+    }
+    //scoreCounter.update(t);
+
+    scoreCount.update(t);
+    livesScr.update(t);
+    thePause.update(t);
   }
 
   void resize(Size size) {
@@ -299,17 +287,18 @@ class GameLoop extends Game {
     }
   }
 
-  void handleDragUpdate(DragUpdateDetails d){
+  void handleDragUpdate(DragUpdateDetails d) {
     // print("x,y");
     // print(d.globalPosition.dx);
     // print(d.globalPosition.dy);
-    bladePixels.add(BladePixel(this, d.globalPosition.dx, d.globalPosition.dy));
-    targets.forEach((Target targets) {
+    if (!isPaused) {
+      bladePixels
+          .add(BladePixel(this, d.globalPosition.dx, d.globalPosition.dy));
+      targets.forEach((Target targets) {
         if (targets.tarRect.contains(d.globalPosition)) {
           targets.onTapDown();
         }
       });
-
+    }
   }
-
 }

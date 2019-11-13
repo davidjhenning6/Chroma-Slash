@@ -1,7 +1,9 @@
 import 'dart:ui';
 import 'package:flutter/painting.dart';
 import 'package:flutter/widgets.dart';
+import 'package:slice_game/components/no_back_route.dart';
 import 'package:slice_game/gameLoop.dart';
+import 'package:slice_game/pages/home_page.dart';
 //import 'package:flame/components/text_box_component.dart';
 
 //this is an option to display the current color the player should attempt to hit
@@ -52,6 +54,8 @@ class Quit {
   }
 
   void onTapDown({@required BuildContext context}) {
+    game.swipeGestures.forEach((ges) => ges.dispose());
     Navigator.pop(context);
+    // Navigator.push(context, NoBackRoute(builder: (_) => HomePage()));
   }
 }

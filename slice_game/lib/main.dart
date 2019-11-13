@@ -13,8 +13,13 @@ void main() async {
   Util flameUtil = Util();
   await flameUtil.fullScreen();
   await flameUtil.setOrientation(DeviceOrientation.portraitUp);
- 
+  
+    // PanGestureRecognizer drag = PanGestureRecognizer();
+    // drag.onUpdate = game.handleDragUpdate;
+    // flameUtil.addGestureRecognizer(drag);
+  
   runApp(SliceGame());
+  
   
 } 
 

@@ -18,24 +18,20 @@ class Target {
 //we will have to eventually pass in a color here when spawnTarget is called
 //as we dont want all of the targets to have the the same colour
   Target(this.game, double x, double y, this.theColor) {
-    tarRect = Rect.fromLTWH(x, y, game.tileSize, game.tileSize);
-    tarPaint = Paint();
-    tarPaint.color = theColor;
-
     //generate random numbers for x and y translations
     //x translations will be dependent on where the cube starts along the x axis
     int min = 1;
     int min2 = 2;
     int maxY = 4; //this is 4 even though there is only 3 states because this method of randome range is exclusive for max but inclusive for min
     int maxX = 3; //this is 3 even though there is only 2 states because this method of randome range is exclusive for max but inclusive for min
-    //int r;
+  
     rand = Random();
     heightD = min2 + rand.nextInt(maxY - min2);
     widthD = min + rand.nextInt(maxX - min);
-    // print("height");
-    // print(heightD);
-    // print("width");
-    // print(widthD);
+
+    tarRect = Rect.fromLTWH(x, y, game.tileSize, game.tileSize);
+    tarPaint = Paint();
+    tarPaint.color = theColor;
   }
 
 // this function will be used to return the correct values to plug into the
@@ -166,11 +162,10 @@ class Target {
       tarRect =
           tarRect.translate(game.tileSize * xMove * t, game.tileSize * 6 * t);
     } else {
-      tarRect =
-          tarRect.translate(game.tileSize * xMove * t, game.tileSize * -6 * t);
+      tarRect = tarRect.translate(game.tileSize * xMove * t, game.tileSize * -6 * t);
     }
     //this will probably be all i need as current plan is to have several jump types but all will result in a jump that begins and ends at the base of the screen
-    if (tarRect.top > game.screenSize.height) {
+    if (tarRect.top > game.screenSize.height - (game.tileSize / 3) && (peakReached == true || isHit == true)) {
       isOffScreen = true;
       if (game.lives > 0 &&
           !isHit &&
@@ -178,15 +173,6 @@ class Target {
         game.lives--;
       }
     }
-    //I'll have to add functionality here so it knows what side it started on and what side it should have hit in order to delete
-    // if(tarRect.left > game.screenSize.width){
-    //   isOffScreen = true;
-    //   if(game.lives > 0) {
-    //     if(theColor.toString() == game.theGoal.goalPaint.color.toString()) {
-    //       game.lives--;
-    //     }
-    //   }
-    // }
   }
 
   void onTapDown() {

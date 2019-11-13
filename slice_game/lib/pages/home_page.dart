@@ -9,7 +9,7 @@ import '../widgets/start_menu.dart';
 
 class HomePage extends StatefulWidget {
   final title;
-  HomePage({@required this.title});
+  HomePage({this.title = 'Slice Game'});
   @override
   State<StatefulWidget> createState() {
     return _HomePage();
