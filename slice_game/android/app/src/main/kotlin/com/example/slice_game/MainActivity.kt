@@ -1,4 +1,4 @@
-package com.example.slice_game
+package com.chromaSlash
 
 import android.os.Bundle
 

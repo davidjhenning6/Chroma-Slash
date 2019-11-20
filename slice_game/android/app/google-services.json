@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "748122841937",
+    "firebase_url": "https://chromaslash-785de.firebaseio.com",
+    "project_id": "chromaslash-785de",
+    "storage_bucket": "chromaslash-785de.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:748122841937:android:3e119a04c9f92bb9e26970",
+        "android_client_info": {
+          "package_name": "com.chromaSlash"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "748122841937-jambbv639heuvrfhpdm48p14fjc6251q.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCFlPjDOtO2zO9phXsAX1ca5DU2M0KyQv0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "748122841937-jambbv639heuvrfhpdm48p14fjc6251q.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

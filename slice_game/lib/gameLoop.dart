@@ -6,6 +6,7 @@ import 'package:flame/game.dart';
 import 'package:flame/flame.dart';
 import 'package:flutter/gestures.dart';
 import 'package:slice_game/components/bladePixel.dart';
+import 'package:slice_game/components/split_targets.dart';
 import 'package:slice_game/components/target.dart';
 //import 'package:slice_game/components/score_counter.dart';
 import 'package:slice_game/components/goal.dart';
@@ -16,6 +17,7 @@ import 'package:slice_game/components/score_count.dart';
 import 'package:slice_game/components/restart_game.dart';
 import 'package:slice_game/components/quit.dart';
 import 'package:slice_game/components/pause_text.dart';
+import 'package:slice_game/firebase/server.dart';
 //import 'package:slice_game/components/game_over.dart';
 
 ///import 'package:slice_game/components/randomColours.dart';
@@ -26,6 +28,7 @@ class GameLoop extends Game {
   Size screenSize;
   double tileSize;
   List<Target> targets;
+  List<SplitTargets> splitTargets;
   List<BladePixel> bladePixels;
   Random rand;
   int score;
@@ -63,14 +66,49 @@ class GameLoop extends Game {
   }
 
   List<Color> totalListColours = [];
+  
   Color getRandomColour() {
+    List<Color> tempColourList = [];
     var rng = new Random();
-    var val = totalListColours[rng.nextInt(3)];
+    for(var i = 0 ; i < totalListColours.length; i++) {
+      if (score < 3) {
+        if(i == 3) break;
+      }
+      else if (score < 10) {
+        if(i == 7) break;
+      }
+      tempColourList.add(totalListColours[i]);
+    }
+    var val = tempColourList[rng.nextInt(tempColourList.length)];
     return val;
   }
 
+  void setUpColourList() {
+    totalListColours = [
+      Color(0xff00a025), //green
+      Color(0xff0032f7), //blue
+      Color(0xff7f169e), //purple
+      Color(0xffff8ac3), //pink
+      Color(0xff643b07), //brown
+      Color(0xff008e83), //teal
+      Color(0xfffff617), //yellow
+      Color(0xfffd7c00), //orange
+      Color(0xffb0e8ff), //lightblue
+      Color(0xff14fbfc), //cyan
+      Color(0xff6d7516), //olive
+      Color(0xffcdaaf2), //lavender
+      Color(0xff630120), // maroon
+      Color(0xff001942), //navyblue
+      Color(0xff002601), //darkgreen
+      Color(0xffb30062), //magenta
+      Color(0xff320a33), //darkpurple
+    ];
+  }
+
+
   void initialize() async {
     targets = List<Target>();
+    splitTargets = List<SplitTargets>();
     bladePixels = List<BladePixel>();
     rand = Random();
     score = 0;
@@ -78,11 +116,7 @@ class GameLoop extends Game {
     currentLevel = 0;
     isPaused = false;
     currentGroupSize = 0;
-    totalListColours = [
-      Color(0xff6ab04c),
-      Color(0xffffff00),
-      Color(0xff0000ff)
-    ];
+    setUpColourList();
     gameThrowCount = 1;
     otherThrowCount = 1;
     isGameOver = false;
@@ -95,6 +129,7 @@ class GameLoop extends Game {
     restart = RestartGame(this);
     quit = Quit(this);
     pauseText = PauseText(this);
+    Server.init();
   }
 
   void spawnTarget(/*double delay*/) {
@@ -147,6 +182,7 @@ class GameLoop extends Game {
 
     //render targets at the end so they are at the forefront
     targets.forEach((Target targets) => targets.render(canvas));
+    splitTargets.forEach((SplitTargets splitTargets) => splitTargets.render(canvas));
     if (bladePixels.length > 0) {
       bladePixels.removeAt(0); //remove happens slower than render so it creates a cool effect hope it works out :)
     }
@@ -165,7 +201,9 @@ class GameLoop extends Game {
     //do collision check here that way after both targets are flipped they can be retested for wall collision
     if (!isPaused) {
       targets.forEach((Target targets) => targets.update(t));
-      targets.removeWhere((Target targets) => targets.isOffScreen);
+      splitTargets.forEach((SplitTargets splitTargets) => splitTargets.update(t));
+      splitTargets.removeWhere((SplitTargets splitTargets) => splitTargets.isOffScreen1 && splitTargets.isOffScreen2 );
+      targets.removeWhere((Target targets) => targets.isHit || targets.isOffScreen);
       if (targets.length > 1) {
         for (outer = 0; outer < targets.length; outer++) {
           //loop through each
@@ -228,7 +266,7 @@ class GameLoop extends Game {
     }
     //add a check to make sure that all of the targets are off the screen and if they are send the next wave
     var milliSec = 300;
-    if (targets.isEmpty) {
+    if (targets.isEmpty && splitTargets.isEmpty) {
       if (lives > 0) {
         theGoal.changeColour(getRandomColour());
         spawnTarget(/*0*/);
@@ -251,6 +289,9 @@ class GameLoop extends Game {
     }
  
     if (lives <= 0) {
+      if(!isGameOver){
+        Server.addScore(score);
+      }
       isGameOver = true;
       lives = 0;
     }

@@ -1,5 +1,6 @@
 import 'dart:ui';
 import 'dart:math';
+import 'package:slice_game/components/split_targets.dart';
 import 'package:slice_game/gameLoop.dart';
 
 class Target {
@@ -155,7 +156,7 @@ class Target {
     
 
     if (isHit == true) {
-      tarRect = tarRect.translate(0, game.tileSize * 6 * t);
+      //tarRect = tarRect.translate(0, game.tileSize * 6 * t);
     } else if (tarRect.bottom < (peak) && peakReached == false) {
       peakReached = true;
     } else if (peakReached == true) {
@@ -180,6 +181,8 @@ class Target {
 
     if (isHit != true) {
       isHit = true;
+      game.splitTargets.add(SplitTargets(game, tarRect.left, tarRect.top));
+      //targets.add(Target(this, x, y, getRandomColour()));
       if (theColor.toString() == game.theGoal.goalPaint.color.toString()) {
         game.score += 1;
       } else {
