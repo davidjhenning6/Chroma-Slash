@@ -61,7 +61,7 @@ class GameLoop extends Game {
   }
 
   GestureRecognizer createDragRecognizer() {
-    return new PanGestureRecognizer()
+    return PanGestureRecognizer()
       ..onUpdate = (DragUpdateDetails update) => this.handleDragUpdate(update);
   }
 
@@ -112,7 +112,7 @@ class GameLoop extends Game {
     bladePixels = List<BladePixel>();
     rand = Random();
     score = 0;
-    lives = 20;
+    lives = 3;
     currentLevel = 0;
     isPaused = false;
     currentGroupSize = 0;
@@ -305,6 +305,11 @@ class GameLoop extends Game {
   void resize(Size size) {
     screenSize = size;
     tileSize = screenSize.width / 6;
+    if(tileSize <= 55){
+      tileSize = 55;
+    }
+    //tileSize = 55;
+    print("size: $tileSize");
   }
 
   void onTapDown(TapDownDetails d) {

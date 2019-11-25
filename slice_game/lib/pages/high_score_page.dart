@@ -22,18 +22,22 @@ class _HighScoreState extends State<HighScorePage> {
         title: Text('High Scores'),
       ),
       body: Container(
-        child: ListView.builder(
+        child: ListView.separated(
+          itemCount: Server.highScores.length,
           itemBuilder: (context, index) {
-            return Card(
-              child: Row(
+            return ListTile(
+              title: Row(
                 children: <Widget>[
-                  Text("Score:"),
-                  Text("${Server.highScores[index]}")
+                  Text("${index+1}      ", style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold)),
+                  Text("Name: ${Server.highScores[index].name}     ", style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold)),
+                  Text("Score: ${Server.highScores[index].score}", style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold)),
                 ],
               ),
             );
           },
-          itemCount: Server.highScores.length,
+          separatorBuilder: (context, index){
+            return Divider(thickness: 2.0,);
+          },
         ),
       ),
     );

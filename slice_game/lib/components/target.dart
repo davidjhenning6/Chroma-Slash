@@ -184,7 +184,9 @@ class Target {
       game.splitTargets.add(SplitTargets(game, tarRect.left, tarRect.top));
       //targets.add(Target(this, x, y, getRandomColour()));
       if (theColor.toString() == game.theGoal.goalPaint.color.toString()) {
-        game.score += 1;
+        if(game.lives >= 0){
+          game.score += 1;
+        }
       } else {
         game.lives--;
       }

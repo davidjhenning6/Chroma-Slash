@@ -29,6 +29,7 @@ dependencies:
   
 
 dev_dependencies:
+  sortedmap: ^0.4.2
   flutter_launcher_icons: "^0.7.0"
   flutter_test:
     sdk: flutter

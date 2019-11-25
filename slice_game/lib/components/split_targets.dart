@@ -15,10 +15,10 @@ class SplitTargets{
 
   //this will recieve the x and y coordinate of 
   SplitTargets(this.game, double x, double y){
-    print("hi");
-    splitTileSize = game.tileSize / 2;
+    //print("hi");
+    splitTileSize = game.tileSize / 1.5;
     theColor = Color(0xffff4757);
-    print("x = $x ; y = $y");
+    //print("x = $x ; y = $y");
 
 
     tarRect1 = Rect.fromLTWH(x, y+splitTileSize, splitTileSize, splitTileSize);
