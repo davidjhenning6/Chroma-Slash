@@ -61,7 +61,7 @@ class GameLoop extends Game {
   }
 
   GestureRecognizer createDragRecognizer() {
-    return PanGestureRecognizer()
+    return new PanGestureRecognizer()
       ..onUpdate = (DragUpdateDetails update) => this.handleDragUpdate(update);
   }
 
@@ -112,7 +112,7 @@ class GameLoop extends Game {
     bladePixels = List<BladePixel>();
     rand = Random();
     score = 0;
-    lives = 3;
+    lives = 20;
     currentLevel = 0;
     isPaused = false;
     currentGroupSize = 0;
@@ -213,6 +213,7 @@ class GameLoop extends Game {
                 targets[outer].tarRect.top < screenSize.height &&
                 targets[inner].tarRect.top < screenSize.height) {
               //flip both that way once it gets to inner as outer it will not catch as the x will already be flipped
+              
               if ((targets[outer].tarRect.center.dy -
                           targets[inner].tarRect.center.dy)
                       .abs() <=
@@ -236,8 +237,38 @@ class GameLoop extends Game {
                             (targets[inner].xMove < 0)) {
                       if (targets[outer].xMove > targets[inner].xMove) {
                         targets[outer].xMove *= -1;
+                        if( (targets[outer].yMove * targets[inner].yMove).abs() < 0 ){
+                          print("this isnt happening");
+                          targets[outer].yMove *= -1;
+                          targets[inner].yMove *= -1;
+                          if(targets[outer].yMove < 0){
+                            targets[outer].peakReached = false;
+                          }else{
+                            targets[outer].peakReached = true;
+                          }
+                          if(targets[inner].yMove < 0){
+                            targets[inner].peakReached = false;
+                          }else{
+                            targets[inner].peakReached = true;
+                          }
+                        }
                       } else {
                         targets[inner].xMove *= -1;
+                        if( (targets[outer].yMove * targets[inner].yMove).abs() < 0 ){
+                          print("this isnt happening");
+                          targets[outer].yMove *= -1;
+                          targets[inner].yMove *= -1;
+                          if(targets[outer].yMove < 0){
+                            targets[outer].peakReached = false;
+                          }else{
+                            targets[outer].peakReached = true;
+                          }
+                          if(targets[inner].yMove < 0){
+                            targets[inner].peakReached = false;
+                          }else{
+                            targets[inner].peakReached = true;
+                          }
+                        }
                       }
                     }
                   } else {
@@ -252,8 +283,39 @@ class GameLoop extends Game {
                             (targets[inner].xMove < 0)) {
                       if (targets[outer].xMove > targets[inner].xMove) {
                         targets[outer].xMove *= -1;
+                        if( (targets[outer].yMove * targets[inner].yMove).abs() < 0 ){
+                          print("this isnt happening");
+                          targets[outer].yMove *= -1;
+                          targets[inner].yMove *= -1;
+                          if(targets[outer].yMove < 0){
+                            targets[outer].peakReached = false;
+                            
+                          }else{
+                            targets[outer].peakReached = true;
+                          }
+                          if(targets[inner].yMove < 0){
+                            targets[inner].peakReached = false;
+                          }else{
+                            targets[inner].peakReached = true;
+                          }
+                        }
                       } else {
                         targets[inner].xMove *= -1;
+                        if( (targets[outer].yMove * targets[inner].yMove).abs() < 0 ){
+                          print("this isnt happening");
+                          targets[outer].yMove *= -1;
+                          targets[inner].yMove *= -1;
+                          if(targets[outer].yMove < 0){
+                            targets[outer].peakReached = false;
+                          }else{
+                            targets[outer].peakReached = true;
+                          }
+                          if(targets[inner].yMove < 0){
+                            targets[inner].peakReached = false;
+                          }else{
+                            targets[inner].peakReached = true;
+                          }
+                        }
                       }
                     }
                   }
