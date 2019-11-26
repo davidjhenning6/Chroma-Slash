@@ -42,7 +42,12 @@ class _HomePage extends State<HomePage> {
   Widget build(context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        title: Text(
+          widget.title,
+          style: TextStyle(
+            fontSize: 30.0,
+          ),
+        ),
       ),
       body: StartMenu(
         onHighScorePressed: highScorePressed,
