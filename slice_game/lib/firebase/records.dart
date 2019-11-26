@@ -18,6 +18,12 @@ class Records{
     String str = " record: $name $score";
     return str;
   }
+
+  add(int a, String b){
+    score = a;
+    name = b;
+
+  }
     
 
 }

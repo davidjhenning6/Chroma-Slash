@@ -49,7 +49,17 @@ class Server {
     });
     fullList.sort((a, b) => a.mySort(a,b) ? 1 : -1);
     print("my list $fullList");
+    List<Records> lenCheck = [];
+    int i;
 
+    //for demonstration purposes I can change the 100 in the 'if' and the 'for' to 10
+    if(fullList.length > 100){
+      for(i=0;i<100;i++){
+        lenCheck.add(fullList[i]);
+      }
+      setState(() => Server.highScores = lenCheck ?? []);
+      return lenCheck ?? [];
+    }
     setState(() => Server.highScores = fullList ?? []);
     return fullList ?? [];
   }
