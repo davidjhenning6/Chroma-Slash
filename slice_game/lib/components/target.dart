@@ -13,6 +13,7 @@ class Target {
   int widthD, heightD;
   double xMove;
   double yMove;
+  double yMoveMaster;
   Random rand;
   Color theColor;
 
@@ -25,7 +26,8 @@ class Target {
     int min2 = 2;
     int maxY = 4; //this is 4 even though there is only 3 states because this method of randome range is exclusive for max but inclusive for min
     int maxX = 3; //this is 3 even though there is only 2 states because this method of randome range is exclusive for max but inclusive for min
-  
+    yMove = -1;
+
     rand = Random();
     heightD = min2 + rand.nextInt(maxY - min2);
     widthD = min + rand.nextInt(maxX - min);
@@ -103,20 +105,21 @@ class Target {
 
   void yTrans(double peak) {
     //use yMove in here
-    if (isHit == true) {
-      yMove = -8;
-      return;
-    }
+    // if (isHit == true) {
+    //   yMove = -8;
+    //   return;
+    // }
 
-    if (heightD == 1) {
-      //as the square approaches peak reduce the y move towards 0 and
-      //when it hits the peak have it sit at 0 for a frame
+    // if (heightD == 1) {
+    //   //as the square approaches peak reduce the y move towards 0 and
+    //   //when it hits the peak have it sit at 0 for a frame
 
-    } else if (heightD == 2) {
-    } else if (heightD == 3) {}
-
+    // } else if (heightD == 2) {
+    // } else if (heightD == 3) {}
+    peakReached = true;
     if (peakReached == true) {
-      //yMove *= -1;
+      yMove *= -1;
+      
     }
     return;
   }
@@ -132,7 +135,7 @@ class Target {
     } else {
       print("error occured");
     }
-    return peak;
+    return game.screenSize.height / 3;//peak;
   }
 
   void render(Canvas c) {
@@ -148,7 +151,10 @@ class Target {
         (peakReached == false && isHit == false)) {
       xTrans();
     }
-    yTrans(peak);
+    // if(peakReached == false){
+    //   yTrans(peak);
+    // }
+    
     if ((tarRect.right + (game.tileSize / 2) >= game.screenSize.width && xMove > 0) ||
         (tarRect.left - (game.tileSize / 2) <= 0 && xMove < 0)) {
       xMove *= -1;
@@ -159,11 +165,12 @@ class Target {
       //tarRect = tarRect.translate(0, game.tileSize * 6 * t);
     } else if (tarRect.bottom < (peak) && peakReached == false) {
       peakReached = true;
+      yMove = 1;
     } else if (peakReached == true) {
       tarRect =
-          tarRect.translate(game.tileSize * xMove * t, game.tileSize * 6 * t);
+          tarRect.translate(game.tileSize * xMove * t, yMove * game.tileSize * 6 * t);
     } else {
-      tarRect = tarRect.translate(game.tileSize * xMove * t, game.tileSize * -6 * t);
+      tarRect = tarRect.translate(game.tileSize * xMove * t, yMove * game.tileSize * 6 * t);
     }
     //this will probably be all i need as current plan is to have several jump types but all will result in a jump that begins and ends at the base of the screen
     if (tarRect.top > game.screenSize.height - (game.tileSize / 3) && (peakReached == true || isHit == true)) {
