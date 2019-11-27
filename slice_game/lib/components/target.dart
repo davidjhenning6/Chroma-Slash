@@ -13,7 +13,7 @@ class Target {
   int widthD, heightD;
   double xMove;
   double yMove;
-  double yMoveMaster;
+  double peak;
   Random rand;
   Color theColor;
 
@@ -26,6 +26,7 @@ class Target {
     int min2 = 2;
     int maxY = 4; //this is 4 even though there is only 3 states because this method of randome range is exclusive for max but inclusive for min
     int maxX = 3; //this is 3 even though there is only 2 states because this method of randome range is exclusive for max but inclusive for min
+    peak = game.screenSize.height / 3;
     yMove = -1;
 
     rand = Random();
@@ -160,17 +161,20 @@ class Target {
       xMove *= -1;
     }
     
-
-    if (isHit == true) {
-      //tarRect = tarRect.translate(0, game.tileSize * 6 * t);
-    } else if (tarRect.bottom < (peak) && peakReached == false) {
-      peakReached = true;
-      yMove = 1;
-    } else if (peakReached == true) {
+    
+    // if (isHit == true) {
+    //   //tarRect = tarRect.translate(0, game.tileSize * 6 * t);
+    // } else 
+    // if (tarRect.bottom < (peak) && peakReached == false) {
+    //   print(theColor);
+    //   peakReached = true;
+    //   yMove = 1;
+    // } else 
+    if (peakReached == true) {
       tarRect =
-          tarRect.translate(game.tileSize * xMove * t, yMove * game.tileSize * 6 * t);
+          tarRect.translate(game.tileSize * xMove * t, yMove * game.tileSize * (game.screenSize.height/game.speedMod) * t);
     } else {
-      tarRect = tarRect.translate(game.tileSize * xMove * t, yMove * game.tileSize * 6 * t);
+      tarRect = tarRect.translate(game.tileSize * xMove * t, yMove * game.tileSize * (game.screenSize.height/game.speedMod) * t);
     }
     //this will probably be all i need as current plan is to have several jump types but all will result in a jump that begins and ends at the base of the screen
     if (tarRect.top > game.screenSize.height - (game.tileSize / 3) && (peakReached == true || isHit == true)) {

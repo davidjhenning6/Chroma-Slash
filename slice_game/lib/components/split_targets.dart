@@ -33,11 +33,11 @@ class SplitTargets{
 
   update(double t){
     if(!isOffScreen1){
-      tarRect1 = tarRect1.translate(game.tileSize * -2 * t, game.tileSize * 8 * t);
+      tarRect1 = tarRect1.translate(game.tileSize * -2 * t, game.tileSize * (game.screenSize.height/game.speedMod) * t);
       isOffScreen1 = isOffScreen(tarRect1);
     }
     if(!isOffScreen2){
-      tarRect2 = tarRect2.translate(game.tileSize * 2 * t, game.tileSize * 8 * t);
+      tarRect2 = tarRect2.translate(game.tileSize * 2 * t, game.tileSize * (game.screenSize.height/game.speedMod) * t);
       isOffScreen2 = isOffScreen(tarRect2);
     }
     

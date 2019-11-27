@@ -32,6 +32,7 @@ class GameLoop extends Game {
   List<BladePixel> bladePixels;
   Random rand;
   int score;
+  int speedMod;
   int lives;
   int otherThrowCount;
   bool isPaused;
@@ -77,7 +78,12 @@ class GameLoop extends Game {
       else if (score < 10) {
         if(i == 7) break;
       }
+
       tempColourList.add(totalListColours[i]);
+    }
+    int tempLen = ((tempColourList.length - 1) / 2).round();
+    for(int _ = 0; _ < tempLen; _++) {
+        tempColourList.add(theGoal.theGoalColor);
     }
     var val = tempColourList[rng.nextInt(tempColourList.length)];
     return val;
@@ -112,7 +118,8 @@ class GameLoop extends Game {
     bladePixels = List<BladePixel>();
     rand = Random();
     score = 0;
-    lives = 20;
+    lives = 10;
+    speedMod = 125;
     currentLevel = 0;
     isPaused = false;
     currentGroupSize = 0;
@@ -204,6 +211,12 @@ class GameLoop extends Game {
       splitTargets.forEach((SplitTargets splitTargets) => splitTargets.update(t));
       splitTargets.removeWhere((SplitTargets splitTargets) => splitTargets.isOffScreen1 && splitTargets.isOffScreen2 );
       targets.removeWhere((Target targets) => targets.isHit || targets.isOffScreen);
+      for(outer=0;outer<targets.length;outer++){
+        if(targets[outer].tarRect.bottom < (targets[outer].peak) && !targets[outer].peakReached){
+          targets[outer].peakReached = true;
+          targets[outer].yMove = 1;
+        }
+      }
       if (targets.length > 1) {
         for (outer = 0; outer < targets.length; outer++) {
           //loop through each
@@ -211,79 +224,32 @@ class GameLoop extends Game {
             //loop through remaining
             if (inner != outer &&
                 targets[outer].tarRect.top < screenSize.height &&
-                targets[inner].tarRect.top < screenSize.height) {
+                targets[inner].tarRect.top < screenSize.height
+            ) {
               //flip both that way once it gets to inner as outer it will not catch as the x will already be flipped
               
               if ((targets[outer].tarRect.center.dy -
                           targets[inner].tarRect.center.dy)
                       .abs() <=
-                  tileSize + (tileSize / 8)) {
+                  tileSize + (tileSize / 8)
+              ) {
                 //check to see if they are within the height
                 if ((targets[outer].tarRect.center.dx -
                             targets[inner].tarRect.center.dx)
                         .abs() <=
-                    tileSize + (tileSize / 8)) {
+                    tileSize + (tileSize / 8)
+                ) {
                   //check if they are within a tileSize width wise
                   if (targets[outer].tarRect.center.dx <
-                      targets[inner].tarRect.center.dx) {
+                      targets[inner].tarRect.center.dx
+                  ) {
                     //if outer is to the left
                     if ((targets[outer].xMove >= 0) &&
-                        (targets[inner].xMove <= 0)) {
+                        (targets[inner].xMove <= 0)
+                    ) {
                       targets[outer].xMove *= -1;
                       targets[inner].xMove *= -1;
-                    } else if ((targets[outer].xMove > 0) &&
-                            (targets[inner].xMove > 0) ||
-                        (targets[outer].xMove < 0) &&
-                            (targets[inner].xMove < 0)) {
-                      if (targets[outer].xMove > targets[inner].xMove) {
-                        targets[outer].xMove *= -1;
-                        if( (targets[outer].yMove * targets[inner].yMove).abs() < 0 ){
-                          print("this isnt happening");
-                          targets[outer].yMove *= -1;
-                          targets[inner].yMove *= -1;
-                          if(targets[outer].yMove < 0){
-                            targets[outer].peakReached = false;
-                          }else{
-                            targets[outer].peakReached = true;
-                          }
-                          if(targets[inner].yMove < 0){
-                            targets[inner].peakReached = false;
-                          }else{
-                            targets[inner].peakReached = true;
-                          }
-                        }
-                      } else {
-                        targets[inner].xMove *= -1;
-                        if( (targets[outer].yMove * targets[inner].yMove).abs() < 0 ){
-                          print("this isnt happening");
-                          targets[outer].yMove *= -1;
-                          targets[inner].yMove *= -1;
-                          if(targets[outer].yMove < 0){
-                            targets[outer].peakReached = false;
-                          }else{
-                            targets[outer].peakReached = true;
-                          }
-                          if(targets[inner].yMove < 0){
-                            targets[inner].peakReached = false;
-                          }else{
-                            targets[inner].peakReached = true;
-                          }
-                        }
-                      }
-                    }
-                  } else {
-                    //if outer is to the right
-                    if ((targets[outer].xMove <= 0) &&
-                        (targets[inner].xMove >= 0)) {
-                      targets[outer].xMove *= -1;
-                      targets[inner].xMove *= -1;
-                    } else if ((targets[outer].xMove > 0) &&
-                            (targets[inner].xMove > 0) ||
-                        (targets[outer].xMove < 0) &&
-                            (targets[inner].xMove < 0)) {
-                      if (targets[outer].xMove > targets[inner].xMove) {
-                        targets[outer].xMove *= -1;
-                        if( (targets[outer].yMove * targets[inner].yMove).abs() < 0 ){
+                      if( targets[outer].yMove != targets[inner].yMove ){
                           print("this isnt happening");
                           targets[outer].yMove *= -1;
                           targets[inner].yMove *= -1;
@@ -298,10 +264,31 @@ class GameLoop extends Game {
                           }else{
                             targets[inner].peakReached = true;
                           }
+                      }else{
+                        if(targets[outer].tarRect.center.dy > targets[inner].tarRect.center.dy){
+                          targets[outer].yMove = -1;
+                          targets[inner].yMove = 1;
+                          targets[outer].peakReached = false;
+                          targets[inner].peakReached = true;
+                        }else{
+                          targets[outer].yMove = 1;
+                          targets[inner].yMove = -1;
+                          targets[outer].peakReached = true;
+                          targets[inner].peakReached = false;
+
                         }
-                      } else {
-                        targets[inner].xMove *= -1;
-                        if( (targets[outer].yMove * targets[inner].yMove).abs() < 0 ){
+
+                      }
+                    } else if ((targets[outer].xMove > 0) &&
+                            (targets[inner].xMove > 0) ||
+                            (targets[outer].xMove < 0) &&
+                            (targets[inner].xMove < 0)
+                      ) {
+                      if (targets[outer].xMove > targets[inner].xMove
+                      ) {
+                        targets[outer].xMove *= -1;
+                        if(  targets[outer].yMove != targets[inner].yMove  
+                        ){
                           print("this isnt happening");
                           targets[outer].yMove *= -1;
                           targets[inner].yMove *= -1;
@@ -315,9 +302,193 @@ class GameLoop extends Game {
                           }else{
                             targets[inner].peakReached = true;
                           }
+                        }else{
+                          if(targets[outer].tarRect.center.dy > targets[inner].tarRect.center.dy){
+                            targets[outer].yMove = -1;
+                            targets[inner].yMove = 1;
+                            targets[outer].peakReached = false;
+                            targets[inner].peakReached = true;
+                          }else{
+                            targets[outer].yMove = 1;
+                            targets[inner].yMove = -1;
+                            targets[outer].peakReached = true;
+                            targets[inner].peakReached = false;
+
+                          }
+
+                        }
+                      } else {
+                        targets[inner].xMove *= -1;
+                        if( targets[outer].yMove != targets[inner].yMove ){
+                          print("this isnt happening");
+                          targets[outer].yMove *= -1;
+                          targets[inner].yMove *= -1;
+                          if(targets[outer].yMove < 0){
+                            targets[outer].peakReached = false;
+                          }else{
+                            targets[outer].peakReached = true;
+                          }
+                          if(targets[inner].yMove < 0){
+                            targets[inner].peakReached = false;
+                          }else{
+                            targets[inner].peakReached = true;
+                          }
+                        }else{
+                          if(targets[outer].tarRect.center.dy > targets[inner].tarRect.center.dy){
+                            targets[outer].yMove = -1;
+                            targets[inner].yMove = 1;
+                            targets[outer].peakReached = false;
+                            targets[inner].peakReached = true;
+                          }else{
+                            targets[outer].yMove = 1;
+                            targets[inner].yMove = -1;
+                            targets[outer].peakReached = true;
+                            targets[inner].peakReached = false;
+
+                          }
+
                         }
                       }
-                    }
+                    }// }else{//if they go the same way
+                    //   if( targets[outer].yMove != targets[inner].yMove ){
+                    //       print("this isnt happening");
+                    //       targets[outer].yMove *= -1;
+                    //       targets[inner].yMove *= -1;
+                    //       if(targets[outer].yMove < 0){
+                    //         targets[outer].peakReached = false;
+                    //       }else{
+                    //         targets[outer].peakReached = true;
+                    //       }
+                    //       if(targets[inner].yMove < 0){
+                    //         targets[inner].peakReached = false;
+                    //       }else{
+                    //         targets[inner].peakReached = true;
+                    //       }
+                    //     }
+                    // }
+                  } else {
+                    //if outer is to the right
+                    if ((targets[outer].xMove <= 0) &&
+                        (targets[inner].xMove >= 0)) {
+                      targets[outer].xMove *= -1;
+                      targets[inner].xMove *= -1;
+                      if( targets[outer].yMove != targets[inner].yMove ){
+                          print("this isnt happening");
+                          targets[outer].yMove *= -1;
+                          targets[inner].yMove *= -1;
+                          if(targets[outer].yMove < 0){
+                            targets[outer].peakReached = false;
+                            
+                          }else{
+                            targets[outer].peakReached = true;
+                          }
+                          if(targets[inner].yMove < 0){
+                            targets[inner].peakReached = false;
+                          }else{
+                            targets[inner].peakReached = true;
+                          }
+                        }else{
+                          if(targets[outer].tarRect.center.dy > targets[inner].tarRect.center.dy){
+                            targets[outer].yMove = -1;
+                            targets[inner].yMove = 1;
+                            targets[outer].peakReached = false;
+                            targets[inner].peakReached = true;
+                          }else{
+                            targets[outer].yMove = 1;
+                            targets[inner].yMove = -1;
+                            targets[outer].peakReached = true;
+                            targets[inner].peakReached = false;
+
+                          }
+
+                        }
+                    } else if ((targets[outer].xMove > 0) &&
+                            (targets[inner].xMove > 0) ||
+                        (targets[outer].xMove < 0) &&
+                            (targets[inner].xMove < 0)
+                      ) {
+                      if (targets[outer].xMove > targets[inner].xMove) {
+                        targets[outer].xMove *= -1;
+                        if( targets[outer].yMove != targets[inner].yMove ){
+                          print("this isnt happening");
+                          targets[outer].yMove *= -1;
+                          targets[inner].yMove *= -1;
+                          if(targets[outer].yMove < 0){
+                            targets[outer].peakReached = false;
+                            
+                          }else{
+                            targets[outer].peakReached = true;
+                          }
+                          if(targets[inner].yMove < 0){
+                            targets[inner].peakReached = false;
+                          }else{
+                            targets[inner].peakReached = true;
+                          }
+                        }else{
+                          if(targets[outer].tarRect.center.dy > targets[inner].tarRect.center.dy){
+                            targets[outer].yMove = -1;
+                            targets[inner].yMove = 1;
+                            targets[outer].peakReached = false;
+                            targets[inner].peakReached = true;
+                          }else{
+                            targets[outer].yMove = 1;
+                            targets[inner].yMove = -1;
+                            targets[outer].peakReached = true;
+                            targets[inner].peakReached = false;
+
+                          }
+
+                        }
+                      } else {
+                        targets[inner].xMove *= -1;
+                        if( targets[outer].yMove != targets[inner].yMove ){
+                          print("this isnt happening");
+                          targets[outer].yMove *= -1;
+                          targets[inner].yMove *= -1;
+                          if(targets[outer].yMove < 0){
+                            targets[outer].peakReached = false;
+                          }else{
+                            targets[outer].peakReached = true;
+                          }
+                          if(targets[inner].yMove < 0){
+                            targets[inner].peakReached = false;
+                          }else{
+                            targets[inner].peakReached = true;
+                          }
+                        }else{
+                          if(targets[outer].tarRect.center.dy > targets[inner].tarRect.center.dy){
+                            targets[outer].yMove = -1;
+                            targets[inner].yMove = 1;
+                            targets[outer].peakReached = false;
+                            targets[inner].peakReached = true;
+                          }else{
+                            targets[outer].yMove = 1;
+                            targets[inner].yMove = -1;
+                            targets[outer].peakReached = true;
+                            targets[inner].peakReached = false;
+
+                          }
+
+                        }
+                      }
+                    }// }else{
+                    //   if( targets[outer].yMove != targets[inner].yMove ){
+                    //       print("this isnt happening");
+                    //       targets[outer].yMove *= -1;
+                    //       targets[inner].yMove *= -1;
+                    //       if(targets[outer].yMove < 0){
+                    //         targets[outer].peakReached = false;
+                    //       }else{
+                    //         targets[outer].peakReached = true;
+                    //       }
+                    //       if(targets[inner].yMove < 0){
+                    //         targets[inner].peakReached = false;
+                    //       }else{
+                    //         targets[inner].peakReached = true;
+                    //       }
+                    //     }
+                    // }
+                    
                   }
                 } //dx check proximity
               } //dy check proximity
@@ -329,6 +500,14 @@ class GameLoop extends Game {
     //add a check to make sure that all of the targets are off the screen and if they are send the next wave
     var milliSec = 300;
     if (targets.isEmpty && splitTargets.isEmpty) {
+      //controlling speedMod
+      if(score >= 0 ){
+        speedMod = 125;
+        speedMod -= score;
+        if(speedMod < 50){
+          speedMod = 50;
+        }
+      }
       if (lives > 0) {
         theGoal.changeColour(getRandomColour());
         spawnTarget(/*0*/);

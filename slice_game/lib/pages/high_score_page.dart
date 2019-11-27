@@ -27,7 +27,7 @@ class _HighScoreState extends State<HighScorePage> {
         child: Column(
           children: <Widget>[
             Container(
-              height: 30.0,
+              height: MediaQuery.of(context).size.height * 0.05,
               color: Colors.blueGrey[700],
               padding: EdgeInsets.symmetric(horizontal: 16.0),
               alignment: Alignment.centerLeft,
