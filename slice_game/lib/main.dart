@@ -25,7 +25,7 @@ void main() async {
 
 
 class SliceGame extends StatelessWidget {
-  static const String _title = "Slice Game";
+  static const String _title = "Chroma-Slash";
 
   @override
   Widget build(BuildContext context) {

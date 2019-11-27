@@ -65,7 +65,7 @@ class _HighScoreState extends State<HighScorePage> {
               ),
             ),
             Container(
-              height: MediaQuery.of(context).size.height * 0.85,
+              height: MediaQuery.of(context).size.height * 0.80,
               child: ListView.separated(
                 itemCount: Server.highScores.length,
                 itemBuilder: (context, index) {
