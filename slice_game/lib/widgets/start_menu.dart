@@ -42,9 +42,14 @@ class _StartMenuState extends State<StartMenu> {
   Widget build(BuildContext context) {
     return Center(
       widthFactor: 1,
-      child: Column(
+      
+      child: Container(
+        //color: randomColor(),
+        child:Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+
         children: <Widget>[
+
           MenuButtons(
             buttonText: "Play",
             onCliked: widget.onPlayPressed,
@@ -62,6 +67,7 @@ class _StartMenuState extends State<StartMenu> {
           ),
 
         ],
+      ),
       ),
     );
   }

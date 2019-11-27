@@ -26,7 +26,9 @@ class _HighScoreState extends State<HighScorePage> {
         //height: 30.0,
         child: Column(
           children: <Widget>[
+            // Top header
             Container(
+              
               height: MediaQuery.of(context).size.height * 0.05,
               color: Colors.blueGrey[700],
               padding: EdgeInsets.symmetric(horizontal: 16.0),
@@ -64,48 +66,50 @@ class _HighScoreState extends State<HighScorePage> {
                 ],
               ),
             ),
-            Container(
-              height: MediaQuery.of(context).size.height * 0.80,
-              child: ListView.separated(
-                itemCount: Server.highScores.length,
-                itemBuilder: (context, index) {
-                  return Container(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Column(
-                          children: [
-                            Text("${index + 1}",
-                                style: TextStyle(
-                                    fontSize: 20.0,
-                                    fontWeight: FontWeight.bold)),
-                          ],
-                        ),
-                        Column(
-                          children: [
-                            Text("${Server.highScores[index].name}",
-                                style: TextStyle(
-                                    fontSize: 20.0,
-                                    fontWeight: FontWeight.bold)),
-                          ],
-                        ),
-                        Column(
-                          children: [
-                            Text("${Server.highScores[index].score}",
-                                style: TextStyle(
-                                    fontSize: 20.0,
-                                    fontWeight: FontWeight.bold)),
-                          ],
-                        ),
-                      ],
-                    ),
-                  );
-                },
-                separatorBuilder: (context, index) {
-                  return Divider(
-                    thickness: 2.0,
-                  );
-                },
+            
+            Expanded(
+              child: Container(
+                child: ListView.separated(
+                  itemCount: Server.highScores.length,
+                  itemBuilder: (context, index) {
+                    return Container(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Column(
+                            children: [
+                              Text("${index + 1}",
+                                  style: TextStyle(
+                                      fontSize: 20.0,
+                                      fontWeight: FontWeight.bold)),
+                            ],
+                          ),
+                          Column(
+                            children: [
+                              Text("${Server.highScores[index].name}",
+                                  style: TextStyle(
+                                      fontSize: 20.0,
+                                      fontWeight: FontWeight.bold)),
+                            ],
+                          ),
+                          Column(
+                            children: [
+                              Text("${Server.highScores[index].score}",
+                                  style: TextStyle(
+                                      fontSize: 20.0,
+                                      fontWeight: FontWeight.bold)),
+                            ],
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                  separatorBuilder: (context, index) {
+                    return Divider(
+                      thickness: 2.0,
+                    );
+                  },
+                ),
               ),
             ),
           ],

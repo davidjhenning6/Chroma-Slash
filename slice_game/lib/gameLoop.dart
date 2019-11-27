@@ -211,6 +211,9 @@ class GameLoop extends Game {
       splitTargets.forEach((SplitTargets splitTargets) => splitTargets.update(t));
       splitTargets.removeWhere((SplitTargets splitTargets) => splitTargets.isOffScreen1 && splitTargets.isOffScreen2 );
       targets.removeWhere((Target targets) => targets.isHit || targets.isOffScreen);
+      if(lives == 0){
+        targets.removeRange(0, targets.length);
+      }
       for(outer=0;outer<targets.length;outer++){
         if(targets[outer].tarRect.bottom < (targets[outer].peak) && !targets[outer].peakReached){
           targets[outer].peakReached = true;
@@ -249,36 +252,36 @@ class GameLoop extends Game {
                     ) {
                       targets[outer].xMove *= -1;
                       targets[inner].xMove *= -1;
-                      if( targets[outer].yMove != targets[inner].yMove ){
-                          print("this isnt happening");
-                          targets[outer].yMove *= -1;
-                          targets[inner].yMove *= -1;
-                          if(targets[outer].yMove < 0){
-                            targets[outer].peakReached = false;
+                      // if( targets[outer].yMove != targets[inner].yMove ){
+                      //     print("this isnt happening");
+                      //     targets[outer].yMove *= -1;
+                      //     targets[inner].yMove *= -1;
+                      //     if(targets[outer].yMove < 0){
+                      //       targets[outer].peakReached = false;
                             
-                          }else{
-                            targets[outer].peakReached = true;
-                          }
-                          if(targets[inner].yMove < 0){
-                            targets[inner].peakReached = false;
-                          }else{
-                            targets[inner].peakReached = true;
-                          }
-                      }else{
-                        if(targets[outer].tarRect.center.dy > targets[inner].tarRect.center.dy){
-                          targets[outer].yMove = -1;
-                          targets[inner].yMove = 1;
-                          targets[outer].peakReached = false;
-                          targets[inner].peakReached = true;
-                        }else{
-                          targets[outer].yMove = 1;
-                          targets[inner].yMove = -1;
-                          targets[outer].peakReached = true;
-                          targets[inner].peakReached = false;
+                      //     }else{
+                      //       targets[outer].peakReached = true;
+                      //     }
+                      //     if(targets[inner].yMove < 0){
+                      //       targets[inner].peakReached = false;
+                      //     }else{
+                      //       targets[inner].peakReached = true;
+                      //     }
+                      // }else{
+                      //   if(targets[outer].tarRect.center.dy > targets[inner].tarRect.center.dy){
+                      //     targets[outer].yMove = -1;
+                      //     targets[inner].yMove = 1;
+                      //     targets[outer].peakReached = false;
+                      //     targets[inner].peakReached = true;
+                      //   }else{
+                      //     targets[outer].yMove = 1;
+                      //     targets[inner].yMove = -1;
+                      //     targets[outer].peakReached = true;
+                      //     targets[inner].peakReached = false;
 
-                        }
+                      //   }
 
-                      }
+                      // }
                     } else if ((targets[outer].xMove > 0) &&
                             (targets[inner].xMove > 0) ||
                             (targets[outer].xMove < 0) &&
@@ -287,67 +290,67 @@ class GameLoop extends Game {
                       if (targets[outer].xMove > targets[inner].xMove
                       ) {
                         targets[outer].xMove *= -1;
-                        if(  targets[outer].yMove != targets[inner].yMove  
-                        ){
-                          print("this isnt happening");
-                          targets[outer].yMove *= -1;
-                          targets[inner].yMove *= -1;
-                          if(targets[outer].yMove < 0){
-                            targets[outer].peakReached = false;
-                          }else{
-                            targets[outer].peakReached = true;
-                          }
-                          if(targets[inner].yMove < 0){
-                            targets[inner].peakReached = false;
-                          }else{
-                            targets[inner].peakReached = true;
-                          }
-                        }else{
-                          if(targets[outer].tarRect.center.dy > targets[inner].tarRect.center.dy){
-                            targets[outer].yMove = -1;
-                            targets[inner].yMove = 1;
-                            targets[outer].peakReached = false;
-                            targets[inner].peakReached = true;
-                          }else{
-                            targets[outer].yMove = 1;
-                            targets[inner].yMove = -1;
-                            targets[outer].peakReached = true;
-                            targets[inner].peakReached = false;
+                        // if(  targets[outer].yMove != targets[inner].yMove  
+                        // ){
+                        //   print("this isnt happening");
+                        //   targets[outer].yMove *= -1;
+                        //   targets[inner].yMove *= -1;
+                        //   if(targets[outer].yMove < 0){
+                        //     targets[outer].peakReached = false;
+                        //   }else{
+                        //     targets[outer].peakReached = true;
+                        //   }
+                        //   if(targets[inner].yMove < 0){
+                        //     targets[inner].peakReached = false;
+                        //   }else{
+                        //     targets[inner].peakReached = true;
+                        //   }
+                        // }else{
+                        //   if(targets[outer].tarRect.center.dy > targets[inner].tarRect.center.dy){
+                        //     targets[outer].yMove = -1;
+                        //     targets[inner].yMove = 1;
+                        //     targets[outer].peakReached = false;
+                        //     targets[inner].peakReached = true;
+                        //   }else{
+                        //     targets[outer].yMove = 1;
+                        //     targets[inner].yMove = -1;
+                        //     targets[outer].peakReached = true;
+                        //     targets[inner].peakReached = false;
 
-                          }
+                        //   }
 
-                        }
+                        // }
                       } else {
                         targets[inner].xMove *= -1;
-                        if( targets[outer].yMove != targets[inner].yMove ){
-                          print("this isnt happening");
-                          targets[outer].yMove *= -1;
-                          targets[inner].yMove *= -1;
-                          if(targets[outer].yMove < 0){
-                            targets[outer].peakReached = false;
-                          }else{
-                            targets[outer].peakReached = true;
-                          }
-                          if(targets[inner].yMove < 0){
-                            targets[inner].peakReached = false;
-                          }else{
-                            targets[inner].peakReached = true;
-                          }
-                        }else{
-                          if(targets[outer].tarRect.center.dy > targets[inner].tarRect.center.dy){
-                            targets[outer].yMove = -1;
-                            targets[inner].yMove = 1;
-                            targets[outer].peakReached = false;
-                            targets[inner].peakReached = true;
-                          }else{
-                            targets[outer].yMove = 1;
-                            targets[inner].yMove = -1;
-                            targets[outer].peakReached = true;
-                            targets[inner].peakReached = false;
+                        // if( targets[outer].yMove != targets[inner].yMove ){
+                        //   print("this isnt happening");
+                        //   targets[outer].yMove *= -1;
+                        //   targets[inner].yMove *= -1;
+                        //   if(targets[outer].yMove < 0){
+                        //     targets[outer].peakReached = false;
+                        //   }else{
+                        //     targets[outer].peakReached = true;
+                        //   }
+                        //   if(targets[inner].yMove < 0){
+                        //     targets[inner].peakReached = false;
+                        //   }else{
+                        //     targets[inner].peakReached = true;
+                        //   }
+                        // }else{
+                        //   if(targets[outer].tarRect.center.dy > targets[inner].tarRect.center.dy){
+                        //     targets[outer].yMove = -1;
+                        //     targets[inner].yMove = 1;
+                        //     targets[outer].peakReached = false;
+                        //     targets[inner].peakReached = true;
+                        //   }else{
+                        //     targets[outer].yMove = 1;
+                        //     targets[inner].yMove = -1;
+                        //     targets[outer].peakReached = true;
+                        //     targets[inner].peakReached = false;
 
-                          }
+                        //   }
 
-                        }
+                        // }
                       }
                     }// }else{//if they go the same way
                     //   if( targets[outer].yMove != targets[inner].yMove ){
@@ -372,36 +375,36 @@ class GameLoop extends Game {
                         (targets[inner].xMove >= 0)) {
                       targets[outer].xMove *= -1;
                       targets[inner].xMove *= -1;
-                      if( targets[outer].yMove != targets[inner].yMove ){
-                          print("this isnt happening");
-                          targets[outer].yMove *= -1;
-                          targets[inner].yMove *= -1;
-                          if(targets[outer].yMove < 0){
-                            targets[outer].peakReached = false;
+                      // if( targets[outer].yMove != targets[inner].yMove ){
+                      //     print("this isnt happening");
+                      //     targets[outer].yMove *= -1;
+                      //     targets[inner].yMove *= -1;
+                      //     if(targets[outer].yMove < 0){
+                      //       targets[outer].peakReached = false;
                             
-                          }else{
-                            targets[outer].peakReached = true;
-                          }
-                          if(targets[inner].yMove < 0){
-                            targets[inner].peakReached = false;
-                          }else{
-                            targets[inner].peakReached = true;
-                          }
-                        }else{
-                          if(targets[outer].tarRect.center.dy > targets[inner].tarRect.center.dy){
-                            targets[outer].yMove = -1;
-                            targets[inner].yMove = 1;
-                            targets[outer].peakReached = false;
-                            targets[inner].peakReached = true;
-                          }else{
-                            targets[outer].yMove = 1;
-                            targets[inner].yMove = -1;
-                            targets[outer].peakReached = true;
-                            targets[inner].peakReached = false;
+                      //     }else{
+                      //       targets[outer].peakReached = true;
+                      //     }
+                      //     if(targets[inner].yMove < 0){
+                      //       targets[inner].peakReached = false;
+                      //     }else{
+                      //       targets[inner].peakReached = true;
+                      //     }
+                      //   }else{
+                      //     if(targets[outer].tarRect.center.dy > targets[inner].tarRect.center.dy){
+                      //       targets[outer].yMove = -1;
+                      //       targets[inner].yMove = 1;
+                      //       targets[outer].peakReached = false;
+                      //       targets[inner].peakReached = true;
+                      //     }else{
+                      //       targets[outer].yMove = 1;
+                      //       targets[inner].yMove = -1;
+                      //       targets[outer].peakReached = true;
+                      //       targets[inner].peakReached = false;
 
-                          }
+                      //     }
 
-                        }
+                      //   }
                     } else if ((targets[outer].xMove > 0) &&
                             (targets[inner].xMove > 0) ||
                         (targets[outer].xMove < 0) &&
@@ -409,67 +412,67 @@ class GameLoop extends Game {
                       ) {
                       if (targets[outer].xMove > targets[inner].xMove) {
                         targets[outer].xMove *= -1;
-                        if( targets[outer].yMove != targets[inner].yMove ){
-                          print("this isnt happening");
-                          targets[outer].yMove *= -1;
-                          targets[inner].yMove *= -1;
-                          if(targets[outer].yMove < 0){
-                            targets[outer].peakReached = false;
+                        // if( targets[outer].yMove != targets[inner].yMove ){
+                        //   print("this isnt happening");
+                        //   targets[outer].yMove *= -1;
+                        //   targets[inner].yMove *= -1;
+                        //   if(targets[outer].yMove < 0){
+                        //     targets[outer].peakReached = false;
                             
-                          }else{
-                            targets[outer].peakReached = true;
-                          }
-                          if(targets[inner].yMove < 0){
-                            targets[inner].peakReached = false;
-                          }else{
-                            targets[inner].peakReached = true;
-                          }
-                        }else{
-                          if(targets[outer].tarRect.center.dy > targets[inner].tarRect.center.dy){
-                            targets[outer].yMove = -1;
-                            targets[inner].yMove = 1;
-                            targets[outer].peakReached = false;
-                            targets[inner].peakReached = true;
-                          }else{
-                            targets[outer].yMove = 1;
-                            targets[inner].yMove = -1;
-                            targets[outer].peakReached = true;
-                            targets[inner].peakReached = false;
+                        //   }else{
+                        //     targets[outer].peakReached = true;
+                        //   }
+                        //   if(targets[inner].yMove < 0){
+                        //     targets[inner].peakReached = false;
+                        //   }else{
+                        //     targets[inner].peakReached = true;
+                        //   }
+                        // }else{
+                        //   if(targets[outer].tarRect.center.dy > targets[inner].tarRect.center.dy){
+                        //     targets[outer].yMove = -1;
+                        //     targets[inner].yMove = 1;
+                        //     targets[outer].peakReached = false;
+                        //     targets[inner].peakReached = true;
+                        //   }else{
+                        //     targets[outer].yMove = 1;
+                        //     targets[inner].yMove = -1;
+                        //     targets[outer].peakReached = true;
+                        //     targets[inner].peakReached = false;
 
-                          }
+                        //   }
 
-                        }
+                        // }
                       } else {
                         targets[inner].xMove *= -1;
-                        if( targets[outer].yMove != targets[inner].yMove ){
-                          print("this isnt happening");
-                          targets[outer].yMove *= -1;
-                          targets[inner].yMove *= -1;
-                          if(targets[outer].yMove < 0){
-                            targets[outer].peakReached = false;
-                          }else{
-                            targets[outer].peakReached = true;
-                          }
-                          if(targets[inner].yMove < 0){
-                            targets[inner].peakReached = false;
-                          }else{
-                            targets[inner].peakReached = true;
-                          }
-                        }else{
-                          if(targets[outer].tarRect.center.dy > targets[inner].tarRect.center.dy){
-                            targets[outer].yMove = -1;
-                            targets[inner].yMove = 1;
-                            targets[outer].peakReached = false;
-                            targets[inner].peakReached = true;
-                          }else{
-                            targets[outer].yMove = 1;
-                            targets[inner].yMove = -1;
-                            targets[outer].peakReached = true;
-                            targets[inner].peakReached = false;
+                        // if( targets[outer].yMove != targets[inner].yMove ){
+                        //   print("this isnt happening");
+                        //   targets[outer].yMove *= -1;
+                        //   targets[inner].yMove *= -1;
+                        //   if(targets[outer].yMove < 0){
+                        //     targets[outer].peakReached = false;
+                        //   }else{
+                        //     targets[outer].peakReached = true;
+                        //   }
+                        //   if(targets[inner].yMove < 0){
+                        //     targets[inner].peakReached = false;
+                        //   }else{
+                        //     targets[inner].peakReached = true;
+                        //   }
+                        // }else{
+                        //   if(targets[outer].tarRect.center.dy > targets[inner].tarRect.center.dy){
+                        //     targets[outer].yMove = -1;
+                        //     targets[inner].yMove = 1;
+                        //     targets[outer].peakReached = false;
+                        //     targets[inner].peakReached = true;
+                        //   }else{
+                        //     targets[outer].yMove = 1;
+                        //     targets[inner].yMove = -1;
+                        //     targets[outer].peakReached = true;
+                        //     targets[inner].peakReached = false;
 
-                          }
+                        //   }
 
-                        }
+                        // }
                       }
                     }// }else{
                     //   if( targets[outer].yMove != targets[inner].yMove ){

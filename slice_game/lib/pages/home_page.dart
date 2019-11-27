@@ -41,6 +41,8 @@ class _HomePage extends State<HomePage> {
   @override
   Widget build(context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
+      resizeToAvoidBottomPadding: false,
       appBar: AppBar(
         title: Text(
           widget.title,
@@ -50,9 +52,11 @@ class _HomePage extends State<HomePage> {
         ),
       ),
       body: StartMenu(
+      
         onHighScorePressed: highScorePressed,
         onPlayerProfilePressed: playerProfilePressed,
         onPlayPressed: playPressed,
+  
       ),
     );
   }
