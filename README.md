@@ -1,8 +1,9 @@
-cis4250protan
+Chroma-Slash
 
 Members Connor Geddes & David Henning This is a mobile app that works on both android and ios devices with the use of Flutter. The game play is similar to fruit ninja however instead of bombs the player needs to "slash" the colours that match the displayed goal colour at the top of the screen.
 
 The game engine "Flame" for flutter is used.
+Developed while the Flame engine was still in beta.
 
 Firebase is used as the backend to store the highscores.
 
